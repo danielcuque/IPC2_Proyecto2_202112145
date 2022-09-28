@@ -1,11 +1,11 @@
-from controller.base.SimplyList import SimplyList
+from controller.base.SinglyLinkedList import SinglyLinkedList
 
 
 class Client:
     def __init__(self, dpi, name):
         self.dpi = dpi
         self.name = name
-        self.transactions = SimplyList()
+        self.transactions = SinglyLinkedList()
 
     def get_dpi(self):
         return self.dpi

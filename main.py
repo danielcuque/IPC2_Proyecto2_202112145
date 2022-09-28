@@ -1,3 +1,6 @@
+from controller.base.Queue import Queue
+
+
 class Main:
     def __init__(self):
         self.run()
@@ -18,6 +21,7 @@ class Main:
         for line in info:
             print(line)
         info.close()
+
 
     def _system_init(self):
         path_file = self._get_file()
