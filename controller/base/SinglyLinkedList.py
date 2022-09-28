@@ -26,6 +26,9 @@ class SinglyLinkedList:
         self.size -= 1
         return node.data
 
+    def is_empty(self):
+        return self.head is None
+
     def show_list(self):
         if self.head is None:
             return

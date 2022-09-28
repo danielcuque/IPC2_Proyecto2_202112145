@@ -1,4 +1,5 @@
 from xml.dom.minidom import Element, parse
+from texttable import Texttable
 
 from controller.base.SinglyLinkedList import SinglyLinkedList
 from controller.classes.Company import Company
@@ -24,12 +25,12 @@ class InitialConfig:
                 company_acronym = company.getElementsByTagName("abreviatura")[
                     0].firstChild.data
                 offices_list: SinglyLinkedList = self.get_offices(company)
-
+                transactions_list: SinglyLinkedList = self.get_transactions(company)
                 new_company = Company(
-                    int(company_id), company_name, company_acronym, offices_list)
+                    int(company_id), company_name, company_acronym, offices_list, transactions_list)
                 self.companyList.append(new_company)
 
-            print(self.companyList)
+            self.show_companies()
 
         except FileNotFoundError:
             print("Ocurrió un error al leer el fichero")
@@ -54,9 +55,10 @@ class InitialConfig:
 
         return offices_list
 
-    def get_desks(self, office: Element) -> SinglyLinkedList:
+    @staticmethod
+    def get_desks(office: Element) -> SinglyLinkedList:
         desk_list: SinglyLinkedList = SinglyLinkedList()
-        desks_element = office.getElementsByTagName("listaEscritorios")
+        desks_element = office.getElementsByTagName("escritorio")
 
         for desk in desks_element:
             desk: Element
@@ -72,16 +74,17 @@ class InitialConfig:
 
         return desk_list
 
-    def get_transactions(self, company: Element) -> SinglyLinkedList:
+    @staticmethod
+    def get_transactions(company: Element) -> SinglyLinkedList:
         transactions_list: SinglyLinkedList = SinglyLinkedList()
         transactions_element = company.getElementsByTagName(
-            "listaTransacciones")
+            "transaccion")
 
         for transaction in transactions_element:
             transaction: Element
 
-            transaction_id = transaction.getAttribute("id")
-            transaction_name = transaction.getElementsByTagName("nombre")[
+            transaction_id: str = transaction.getAttribute("id")
+            transaction_name: str = transaction.getElementsByTagName("nombre")[
                 0].firstChild.data
             transaction_time = transaction.getElementsByTagName("tiempoAtencion")[
                 0].firstChild.data
