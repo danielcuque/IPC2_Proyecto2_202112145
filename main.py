@@ -1,40 +1,42 @@
-from controller.base.Queue import Queue
+from model.simulation.InitialConfig import InitialConfig
 
 
 class Main:
-    def __init__(self):
+
+    initial_config: InitialConfig = InitialConfig()
+
+    def __init__(self) -> None:
         self.run()
 
-    def _initial_menu(self):
+    def _initial_menu(self) -> str:
         print("1. Configuración del sistema")
         print("2. Inicialización del sistema")
         print("3. Exit")
-        return input("Enter your choice: ")
+        return input("Seleccione una opción: ")
 
-    def _get_file(self):
+    def _get_file(self) -> str:
         path_file = input("Introduzca la ruta del fichero: ")
         return path_file
 
-    def _system_config(self):
+    def _system_config(self) -> None:
         path_file = self._get_file()
-        info = open(path_file, "r")
-        for line in info:
-            print(line)
-        info.close()
+        if path_file:
+            self.initial_config.system_config(path_file)
+        else:
+            print("No existe el fichero")
 
-
-    def _system_init(self):
+    def _system_init(self) -> None:
         path_file = self._get_file()
-        info = open(path_file, "r")
-        for line in info:
-            print(line)
-        info.close()
+        if path_file:
+            self.initial_config.system_init(path_file)
+        else:
+            print("No existe el fichero")
 
     def _exit(self):
         print("Bye!")
         exit()
 
-    def run(self):
+    def run(self) -> None:
         while True:
             choice = self._initial_menu()
             if choice == "1":
@@ -44,7 +46,7 @@ class Main:
             elif choice == "3":
                 self._exit()
             else:
-                print("Invalid choice")
+                print("No existe esta opción")
 
 
 if __name__ == "__main__":

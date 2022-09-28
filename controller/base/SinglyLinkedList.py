@@ -1,7 +1,4 @@
-
-
-
-from controller.base.NodeForSimplyList import NodeForSimplyList
+from controller.base.NodeForSinglyList import NodeForSinglyList
 
 
 class SinglyLinkedList:
@@ -11,7 +8,7 @@ class SinglyLinkedList:
         self.size = 0
 
     def append(self, data):
-        node: NodeForSimplyList = NodeForSimplyList(data)
+        node: NodeForSinglyList = NodeForSinglyList(data)
         if self.head is None:
             self.head = node
             self.tail = node

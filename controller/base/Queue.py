@@ -1,6 +1,3 @@
-
-
-
 from controller.base.SinglyLinkedList import SinglyLinkedList
 
 
