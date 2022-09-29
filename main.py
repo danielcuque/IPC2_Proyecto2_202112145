@@ -1,3 +1,4 @@
+from controller.base.Queue import Queue
 from model.simulation.InitialConfig import InitialConfig
 
 

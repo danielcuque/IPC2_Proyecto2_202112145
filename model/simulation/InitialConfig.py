@@ -28,7 +28,7 @@ class InitialConfig:
                 transactions_list: SinglyLinkedList = self.get_transactions(company)
                 new_company = Company(
                     int(company_id), company_name, company_acronym, offices_list, transactions_list)
-                self.companyList.append(new_company)
+                self.companyList.insert_at_end(new_company)
 
             self.show_companies()
 
@@ -51,7 +51,7 @@ class InitialConfig:
 
             new_office = Office(office_id, office_name,
                                 office_address, office_desks)
-            offices_list.append(new_office)
+            offices_list.insert_at_end(new_office)
 
         return offices_list
 
@@ -70,7 +70,7 @@ class InitialConfig:
                 0].firstChild.data
 
             new_desk = Desk(int(desk_id), desk_correlative, desk_employee)
-            desk_list.append(new_desk)
+            desk_list.insert_at_end(new_desk)
 
         return desk_list
 
@@ -91,7 +91,7 @@ class InitialConfig:
 
             new_transaction = TransactionCompany(
                 int(transaction_id), transaction_name, transaction_time)
-            transactions_list.append(new_transaction)
+            transactions_list.insert_at_end(new_transaction)
 
         return transactions_list
 

@@ -1,3 +1,4 @@
+from controller.base.Queue import Queue
 from controller.base.SinglyLinkedList import SinglyLinkedList
 
 
@@ -9,3 +10,4 @@ class Company:
         self.acronym: str = acronym.strip()
         self.offices: SinglyLinkedList = offices
         self.transactions: SinglyLinkedList = transactions
+    
