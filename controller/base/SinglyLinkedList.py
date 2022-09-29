@@ -29,6 +29,11 @@ class SinglyLinkedList:
     def is_empty(self):
         return self.head is None
 
+    def clear(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+
     def show_list(self):
         if self.head is None:
             return

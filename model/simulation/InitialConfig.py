@@ -202,5 +202,9 @@ class InitialConfig:
                 node = node.next
             return table.draw()
 
+    def clear_system(self):
+        self.companyList.clear()
+
+
     def system_init(self, path_file):
         pass
