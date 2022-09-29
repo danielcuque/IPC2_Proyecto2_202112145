@@ -1,14 +1,16 @@
 from xml.dom.minidom import Element, parse
 from texttable import Texttable
+from controller.base.Queue import Queue
 
 from controller.base.SinglyLinkedList import SinglyLinkedList
+from controller.base.Stack import Stack
 from controller.classes.Company import Company
 from controller.classes.Desk import Desk
 from controller.classes.Office import Office
 from controller.classes.TransactionCompany import TransactionCompany
 
 
-class InitialConfig:
+class SystemConfig:
     companyList: SinglyLinkedList = SinglyLinkedList()
 
     def system_config(self, path_file):
@@ -25,11 +27,11 @@ class InitialConfig:
                 company_acronym = company.getElementsByTagName("abreviatura")[
                     0].firstChild.data
                 offices_list: SinglyLinkedList = self.get_offices(company)
-                transactions_list: SinglyLinkedList = self.get_transactions(company)
-                new_company = Company(
-                    int(company_id), company_name, company_acronym, offices_list, transactions_list)
-                self.companyList.insert_at_end(new_company)
+                transactions_list: SinglyLinkedList = self.get_transactions(
+                    company)
 
+                self.create_company(
+                    company_id, company_name, company_acronym, offices_list, transactions_list)
             self.show_companies()
 
         except FileNotFoundError:
@@ -94,6 +96,40 @@ class InitialConfig:
             transactions_list.insert_at_end(new_transaction)
 
         return transactions_list
+
+    def clear_system(self) -> str:
+        self.companyList.clear()
+        if self.companyList.is_empty():
+            return "Sistema limpio"
+        else:
+            return "No se pudo limpiar el sistema"
+
+    def create_company(self, id_company: int, name: str, acronym: str, offices: SinglyLinkedList, transactions: SinglyLinkedList) -> str:
+        if self.companyList.is_empty():
+            new_company = Company(
+                id_company, name, acronym, offices, transactions)
+            self.companyList.insert_at_end(new_company)
+            return "Empresa creada"
+        else:
+            node = self.companyList.head
+            while node is not None:
+                company: Company = node.data
+                if company.id_company == id_company:
+                    return "Ya existe una empresa con ese ID"
+                node = node.next
+
+            new_company = Company(
+                id_company, name, acronym, offices, transactions)
+            self.companyList.insert_at_end(new_company)
+            return "Empresa creada"
+
+    def create_office(self, id_office: int, name: str, address: str, desks: Stack) -> Office:
+        new_office: Office = Office(id_office, name, address)
+        new_office.set_inactive_desks(desks)
+        return Office(id_office, name, address, desks)
+
+    def create_desk(self, id_desk: int, correlative: str, employee: str) -> Desk:
+        return Desk(id_desk, correlative, employee)
 
     def show_companies(self):
         if self.companyList.is_empty():
@@ -201,10 +237,3 @@ class InitialConfig:
 
                 node = node.next
             return table.draw()
-
-    def clear_system(self):
-        self.companyList.clear()
-
-
-    def system_init(self, path_file):
-        pass

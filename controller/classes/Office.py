@@ -12,3 +12,23 @@ class Office:
         self.inactive_desk: Stack = Stack()
         self.clients: Queue = Queue()
 
+    def __str__(self):
+        return f"ID: {self.id_office}, Nombre: {self.name}, Dirección: {self.address}"
+
+    def __repr__(self):
+        return f"ID: {self.id_office}, Nombre: {self.name}, Dirección: {self.address}"
+
+    def get_active_desks(self) -> Stack:
+        return self.active_desks
+
+    def get_inactive_desks(self) -> Stack:
+        return self.inactive_desk
+
+    def set_active_desks(self, active_desks: Stack) -> None:
+        self.active_desks = active_desks
+
+    def set_inactive_desks(self, inactive_desk: Stack) -> None:
+        self.inactive_desk = inactive_desk
+
+    def set_clients(self, clients: Queue) -> None:
+        self.clients = clients
