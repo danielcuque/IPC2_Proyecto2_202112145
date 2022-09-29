@@ -16,12 +16,13 @@ class Queue:
         return self.items.remove_at_position(self.items.size - 1)
 
     def traverse(self) -> None:
-        count = 0
         node = self.items.head
         while node is not None:
-            print(f"{count}: {node.data}")
+            print(f'{node.data}')
             node = node.next
-            count += 1
+
+    def is_empty(self) -> bool:
+        return self.items.size == 0
 
     def get_size(self) -> int:
         return self.items.size

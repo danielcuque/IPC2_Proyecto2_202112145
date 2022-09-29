@@ -37,66 +37,6 @@ class SystemConfig:
         except FileNotFoundError:
             print("Ocurrió un error al leer el fichero")
 
-    def get_offices(self, company: Element) -> SinglyLinkedList:
-        offices_list: SinglyLinkedList = SinglyLinkedList()
-        offices_element = company.getElementsByTagName("puntoAtencion")
-
-        for office in offices_element:
-            office: Element
-
-            office_id = office.getAttribute("id")
-            office_name = office.getElementsByTagName("nombre")[
-                0].firstChild.data
-            office_address = office.getElementsByTagName("direccion")[
-                0].firstChild.data
-            office_desks: SinglyLinkedList = self.get_desks(office)
-
-            new_office = Office(office_id, office_name,
-                                office_address, office_desks)
-            offices_list.insert_at_end(new_office)
-
-        return offices_list
-
-    @staticmethod
-    def get_desks(office: Element) -> SinglyLinkedList:
-        desk_list: SinglyLinkedList = SinglyLinkedList()
-        desks_element = office.getElementsByTagName("escritorio")
-
-        for desk in desks_element:
-            desk: Element
-
-            desk_id = desk.getAttribute("id")
-            desk_correlative = desk.getElementsByTagName("identificacion")[
-                0].firstChild.data
-            desk_employee = desk.getElementsByTagName("encargado")[
-                0].firstChild.data
-
-            new_desk = Desk(int(desk_id), desk_correlative, desk_employee)
-            desk_list.insert_at_end(new_desk)
-
-        return desk_list
-
-    @staticmethod
-    def get_transactions(company: Element) -> SinglyLinkedList:
-        transactions_list: SinglyLinkedList = SinglyLinkedList()
-        transactions_element = company.getElementsByTagName(
-            "transaccion")
-
-        for transaction in transactions_element:
-            transaction: Element
-
-            transaction_id: str = transaction.getAttribute("id")
-            transaction_name: str = transaction.getElementsByTagName("nombre")[
-                0].firstChild.data
-            transaction_time = transaction.getElementsByTagName("tiempoAtencion")[
-                0].firstChild.data
-
-            new_transaction = TransactionCompany(
-                int(transaction_id), transaction_name, transaction_time)
-            transactions_list.insert_at_end(new_transaction)
-
-        return transactions_list
-
     def clear_system(self) -> str:
         self.companyList.clear()
         if self.companyList.is_empty():
@@ -126,10 +66,74 @@ class SystemConfig:
     def create_office(self, id_office: int, name: str, address: str, desks: Stack) -> Office:
         new_office: Office = Office(id_office, name, address)
         new_office.set_inactive_desks(desks)
-        return Office(id_office, name, address, desks)
+        return new_office
 
     def create_desk(self, id_desk: int, correlative: str, employee: str) -> Desk:
         return Desk(id_desk, correlative, employee)
+
+    def create_transaction(self, id_transaction: int, name: str, acronym: str, duration: int) -> TransactionCompany:
+        return TransactionCompany(id_transaction, name, acronym, duration)
+
+    def get_offices(self, company: Element) -> SinglyLinkedList:
+        offices_list: SinglyLinkedList = SinglyLinkedList()
+        offices_element = company.getElementsByTagName("puntoAtencion")
+
+        for office in offices_element:
+            office: Element
+
+            office_id = office.getAttribute("id")
+            office_name = office.getElementsByTagName("nombre")[
+                0].firstChild.data
+            office_address = office.getElementsByTagName("direccion")[
+                0].firstChild.data
+            office_desks: Queue = self.get_desks(office)
+
+            new_office: Office = self.create_office(
+                office_id, office_name, office_address, office_desks)
+
+            offices_list.insert_at_end(new_office)
+
+        return offices_list
+
+    @staticmethod
+    def get_desks(office: Element) -> Queue:
+        desk_list: Queue = Queue()
+        desks_element = office.getElementsByTagName("escritorio")
+
+        for desk in desks_element:
+            desk: Element
+
+            desk_id = desk.getAttribute("id")
+            desk_correlative = desk.getElementsByTagName("identificacion")[
+                0].firstChild.data
+            desk_employee = desk.getElementsByTagName("encargado")[
+                0].firstChild.data
+
+            new_desk = Desk(int(desk_id), desk_correlative, desk_employee)
+            desk_list.enqueue(new_desk)
+
+        return desk_list
+
+    @staticmethod
+    def get_transactions(company: Element) -> SinglyLinkedList:
+        transactions_list: SinglyLinkedList = SinglyLinkedList()
+        transactions_element = company.getElementsByTagName(
+            "transaccion")
+
+        for transaction in transactions_element:
+            transaction: Element
+
+            transaction_id: str = transaction.getAttribute("id")
+            transaction_name: str = transaction.getElementsByTagName("nombre")[
+                0].firstChild.data
+            transaction_time = transaction.getElementsByTagName("tiempoAtencion")[
+                0].firstChild.data
+
+            new_transaction = TransactionCompany(
+                int(transaction_id), transaction_name, transaction_time)
+            transactions_list.insert_at_end(new_transaction)
+
+        return transactions_list
 
     def show_companies(self):
         if self.companyList.is_empty():
@@ -141,7 +145,7 @@ class SystemConfig:
                 self.show_company_by_id(company.id_company)
                 node = node.next
 
-    def show_company_by_id(self, id_company: int):
+    def show_company_by_id(self, id_company: int) -> str or None:
         if self.companyList.is_empty():
             return "No hay empresas registradas"
         else:
@@ -166,8 +170,10 @@ class SystemConfig:
                           f'{self.show_offices(company.offices)}\n'
                           f'Transacciones: {company.transactions.size}\n'
                           f'{self.show_transactions(company.transactions)}\n\n\n')
-                    break
+                    return ""
                 node = node.next
+
+            return "No se encontró la empresa"
 
     def show_offices(self, offices_list: SinglyLinkedList) -> str:
         if offices_list.is_empty():
@@ -186,14 +192,14 @@ class SystemConfig:
                     office.id_office,
                     office.name,
                     office.address,
-                    self.show_desks(office.desks)
+                    self.show_desks(office.get_inactive_desks())
                 ])
                 node = node.next
 
             return table.draw()
 
     @staticmethod
-    def show_desks(desks_list: SinglyLinkedList) -> str:
+    def show_desks(desks_list: Queue) -> str:
         if desks_list.is_empty():
             return "No hay escritorios registrados"
         else:
@@ -203,7 +209,7 @@ class SystemConfig:
             table.set_cols_valign(["m", "m", "m"])
 
             table.header(["ID Escritorio", "Identificación", "Encargado"])
-            node = desks_list.head
+            node = desks_list.items.head
             while node is not None:
                 desk: Desk = node.data
                 table.add_row([
