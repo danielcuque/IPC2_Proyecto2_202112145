@@ -95,5 +95,112 @@ class InitialConfig:
 
         return transactions_list
 
+    def show_companies(self):
+        if self.companyList.is_empty():
+            return "No hay empresas registradas"
+        else:
+            node = self.companyList.head
+            while node is not None:
+                company: Company = node.data
+                self.show_company_by_id(company.id_company)
+                node = node.next
+
+    def show_company_by_id(self, id_company: int):
+        if self.companyList.is_empty():
+            return "No hay empresas registradas"
+        else:
+            node = self.companyList.head
+            while node is not None:
+                company: Company = node.data
+                if company.id_company == id_company:
+                    table = Texttable()
+                    table.set_deco(Texttable.HEADER)
+                    table.set_max_width(100)
+                    table.set_cols_align(["l", "l", "c"])
+                    table.set_cols_valign(["m", "m", "m"])
+                    table.header(["ID Empresa", "Nombre", "Abreviatura"])
+                    table.add_row([
+                        company.id_company,
+                        company.name,
+                        company.acronym,
+                    ])
+                    print(f'Empresa: {company.name}\n'
+                          f'{table.draw()}\n'
+                          f'Oficinas: {company.offices.size}\n'
+                          f'{self.show_offices(company.offices)}\n'
+                          f'Transacciones: {company.transactions.size}\n'
+                          f'{self.show_transactions(company.transactions)}\n\n\n')
+                    break
+                node = node.next
+
+    def show_offices(self, offices_list: SinglyLinkedList) -> str:
+        if offices_list.is_empty():
+            return "No hay puntos de atención registrados"
+        else:
+            table = Texttable()
+            table.set_max_width(100)
+            table.set_deco(Texttable.HEADER)
+            table.set_cols_align(["l", "l", "l", "c"])
+            table.set_cols_valign(["m", "m", "m", "m"])
+            table.header(["ID Oficina", "Nombre", "Dirección", "Escritorios"])
+            node = offices_list.head
+            while node is not None:
+                office: Office = node.data
+                table.add_row([
+                    office.id_office,
+                    office.name,
+                    office.address,
+                    self.show_desks(office.desks)
+                ])
+                node = node.next
+
+            return table.draw()
+
+    @staticmethod
+    def show_desks(desks_list: SinglyLinkedList) -> str:
+        if desks_list.is_empty():
+            return "No hay escritorios registrados"
+        else:
+            table = Texttable()
+            table.set_deco(Texttable.HEADER)
+            table.set_cols_align(["l", "l", "l"])
+            table.set_cols_valign(["m", "m", "m"])
+
+            table.header(["ID Escritorio", "Identificación", "Encargado"])
+            node = desks_list.head
+            while node is not None:
+                desk: Desk = node.data
+                table.add_row([
+                    desk.id_desk,
+                    desk.correlative,
+                    desk.employee,
+                ])
+
+                node = node.next
+            return table.draw()
+
+    @staticmethod
+    def show_transactions(transactions_list: SinglyLinkedList) -> str:
+        if transactions_list.is_empty():
+            return "No hay transacciones registradas"
+        else:
+            table = Texttable()
+            table.set_deco(Texttable.HEADER)
+            table.set_cols_align(["l", "l", "l"])
+            table.set_cols_valign(["m", "m", "m"])
+
+            table.header(["ID", "Nombre", "Tiempo de atención"])
+            node = transactions_list.head
+            while node is not None:
+                transaction: TransactionCompany = node.data
+                table.add_row([
+                    transaction.id_transaction,
+                    transaction.name,
+                    transaction.time
+                ])
+
+                node = node.next
+            return table.draw()
+
     def system_init(self, path_file):
         pass

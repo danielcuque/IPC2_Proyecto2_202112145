@@ -8,13 +8,15 @@ class Main:
     def __init__(self) -> None:
         self.run()
 
-    def _initial_menu(self) -> str:
+    @staticmethod
+    def _initial_menu() -> str:
         print("1. Configuración del sistema")
         print("2. Inicialización del sistema")
         print("3. Exit")
         return input("Seleccione una opción: ")
 
-    def _get_file(self) -> str:
+    @staticmethod
+    def _get_file() -> str:
         path_file = input("Introduzca la ruta del fichero: ")
         return path_file
 
@@ -32,8 +34,9 @@ class Main:
         else:
             print("No existe el fichero")
 
-    def _exit(self):
-        print("Bye!")
+    @staticmethod
+    def _exit():
+        print("¡Adiós!")
         exit()
 
     def run(self) -> None:
