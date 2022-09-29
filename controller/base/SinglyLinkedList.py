@@ -18,7 +18,7 @@ class SinglyLinkedList:
         self.size += 1
         return node
 
-    def pop(self):
+    def remove(self):
         if self.head is None:
             return
         node = self.head

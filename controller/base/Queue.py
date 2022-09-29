@@ -12,7 +12,7 @@ class Queue:
         self.size += 1
 
     def dequeue(self):
-        data = self.items.pop()
+        data = self.items.remove()
         self.size -= 1
         return data
 
