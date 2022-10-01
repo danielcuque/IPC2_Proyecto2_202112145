@@ -1,5 +1,6 @@
 from xml.dom.minidom import Element, parse
-from texttable import Texttable
+from rich.console import Console
+from rich.table import Table
 
 from controller.base.SinglyLinkedList import SinglyLinkedList
 from controller.base.Stack import Stack
@@ -147,102 +148,21 @@ class SystemConfig:
                 company: Company = node.data
                 self.show_company_by_id(company.id_company)
                 node = node.next
-
+    
     def show_company_by_id(self, id_company: str) -> str or None:
+        pass
+
+    def show_office_by_id_company(self, id_company: str, id_office: str) -> str or None:
+        pass
+
+    def show_desk_by_id_office(self, id_company: str, id_office: str, id_desk: str) -> str or None:
+        pass
+
+    def show_transaction_by_id_company(self, id_company: str, id_transaction: str) -> str or None:
+        pass
+
+    def clear_system(self) -> bool:
+        self.companyList.clear()
         if self.companyList.is_empty():
-            return "No hay empresas registradas"
-        else:
-            node = self.companyList.head
-            while node is not None:
-                company: Company = node.data
-                if company.id_company == id_company:
-                    table = Texttable()
-                    table.set_deco(Texttable.HEADER)
-                    table.set_max_width(100)
-                    table.set_cols_align(["l", "l", "c"])
-                    table.set_cols_valign(["m", "m", "m"])
-                    table.header(["ID Empresa", "Nombre", "Abreviatura"])
-                    table.add_row([
-                        company.id_company,
-                        company.name,
-                        company.acronym,
-                    ])
-                    print(f'Empresa: {company.name}\n'
-                          f'{table.draw()}\n'
-                          f'Oficinas: {company.offices.size}\n'
-                          f'{self.show_offices(company.offices)}\n'
-                          f'Transacciones: {company.transactions.size}\n'
-                          f'{self.show_transactions(company.transactions)}\n\n\n')
-                    return ""
-                node = node.next
-
-            return "No se encontró la empresa"
-
-    def show_offices(self, offices_list: SinglyLinkedList) -> str:
-        if offices_list.is_empty():
-            return "No hay puntos de atención registrados"
-        else:
-            table = Texttable()
-            table.set_max_width(100)
-            table.set_deco(Texttable.HEADER)
-            table.set_cols_align(["l", "l", "l", "c"])
-            table.set_cols_valign(["m", "m", "m", "m"])
-            table.header(["ID Oficina", "Nombre", "Dirección", "Escritorios"])
-            node = offices_list.head
-            while node is not None:
-                office: Office = node.data
-                table.add_row([
-                    office.id_office,
-                    office.name,
-                    office.address,
-                    self.show_desks(office.get_inactive_desks())
-                ])
-                node = node.next
-
-            return table.draw()
-
-    @staticmethod
-    def show_desks(desks_list: Stack) -> str:
-        if desks_list.is_empty():
-            return "No hay escritorios registrados"
-        else:
-            table = Texttable()
-            table.set_deco(Texttable.HEADER)
-            table.set_cols_align(["l", "l", "l"])
-            table.set_cols_valign(["m", "m", "m"])
-
-            table.header(["ID Escritorio", "Identificación", "Encargado"])
-            node = desks_list.stack.head
-            while node is not None:
-                desk: Desk = node.data
-                table.add_row([
-                    desk.id_desk,
-                    desk.correlative,
-                    desk.employee,
-                ])
-
-                node = node.next
-            return table.draw()
-
-    @staticmethod
-    def show_transactions(transactions_list: SinglyLinkedList) -> str:
-        if transactions_list.is_empty():
-            return "No hay transacciones registradas"
-        else:
-            table = Texttable()
-            table.set_deco(Texttable.HEADER)
-            table.set_cols_align(["l", "l", "l"])
-            table.set_cols_valign(["m", "m", "m"])
-
-            table.header(["ID", "Nombre", "Tiempo de atención"])
-            node = transactions_list.head
-            while node is not None:
-                transaction: TransactionCompany = node.data
-                table.add_row([
-                    transaction.id_transaction,
-                    transaction.name,
-                    transaction.time
-                ])
-
-                node = node.next
-            return table.draw()
+            return True
+        
