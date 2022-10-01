@@ -74,126 +74,89 @@ class Main:
     def _create_company_menu(self) -> None:
         q = [
             inquirer.Text('id_company',
-                          message="Ingrese el id de la empresa"),
+                          message="Ingrese el id de la empresa",
+                          validate=lambda _, x: len(x) > 0 and x.isalnum()),
             inquirer.Text('name',
-                          message="Ingrese el nombre de la empresa"),
+                          message="Ingrese el nombre de la empresa",
+                          validate=lambda _, x: len(x) > 0 and x.isalnum()),
             inquirer.Text('acronym',
-                          message="Ingrese la abreviatura de la empresa")]
+                          message="Ingrese la abreviatura de la empresa",
+                          validate=lambda _, x: len(x) > 0 and x.isalnum())]
         answers = inquirer.prompt(questions=q)
-
-        print(answers)
-
-        # while True:
-        #     id_company: str = ""
-        #     name: str = ""
-        #     acronym: str = ""
-
-        #     while id_company == "":
-        #         id_company: str = input("Ingrese el id de la empresa: ")
-        #     while name == "":
-        #         name: str = input("Ingrese el nombre de la empresa: ")
-        #     while acronym == "":
-        #         acronym: str = input("Ingrese el acrónimo de la empresa: ")
-
-        #     print("\n1. Nuevo punto de venta")
-        #     print("2. Nueva transacción")
-        #     option = input("Seleccione una opción: ")
-
-        #     offices: SinglyLinkedList = SinglyLinkedList()
-        #     transactions: SinglyLinkedList = SinglyLinkedList()
-
-        #     if option == "1":
-        #         new_office_list: SinglyLinkedList = self._create_office()
-        #         if new_office_list is not None:
-        #             offices = new_office_list
-        #         else:
-        #             print("No se pudo crear el punto de venta")
-        #     elif option == "2":
-        #         new_transaction_list: SinglyLinkedList = self._create_transaction()
-        #         if new_transaction_list is not None:
-        #             transactions = new_transaction_list
-        #         else:
-        #             print("No se pudo crear la transacción")
-        #     else:
-        #         print("No existe esta opción")
-
-        #     if offices.get_size() == 0:
-        #         print("No se puede crear la empresa sin puntos de venta")
-        #     elif transactions == 0:
-        #         print("No se puede crear la empresa sin transacciones")
-        #     else:
-        #         resp: str = self.system_config.create_company(
-        #             id_company, name, acronym, offices, transactions)
-        #         print(f'\n{resp}')
-
-        #         print("\n ¿Desea agregar otra empresa?")
-        #         print("1. Si")
-        #         print("2. No")
-        #         option = input("Seleccione una opción: ")
-        #         if option == "1":
-        #             continue
-        #         elif option == "2":
-        #             break
-        #         else:
-        #             print("No existe esta opción")
+        if answers is not None:
+            id_company: str = answers['id_company']
+            name: str = answers['name']
+            acronym: str = answers['acronym']
+            offices: SinglyLinkedList = self._create_office()
+            transactions: SinglyLinkedList = self._create_transaction()
+            if offices is not None and transactions is not None:
+                r = self.system_config.create_company(
+                    id_company, name, acronym, offices, transactions)
+                print(r)
+            else:
+                print("No se pudo crear la empresa")
 
     # Option 1.3.1 for menu 1.1
-
     def _create_office(self) -> SinglyLinkedList:
+        offices: SinglyLinkedList = SinglyLinkedList()
         while True:
-            new_offices_list: SinglyLinkedList = SinglyLinkedList()
+            q = [
+                inquirer.Text('id_office',
+                              message="Ingrese el id del punto de atención",
+                              validate=lambda _, x: len(x) > 0 and x.isalnum()),
+                inquirer.Text('name',
+                              message="Ingrese el nombre del punto de atención",
+                              validate=lambda _, x: len(x) > 0 and x.isalnum()),
+                inquirer.Text('address',
+                              message="Ingrese la dirección del puesto de atención",
+                              validate=lambda _, x: len(x) > 0 and x.isalnum())]
+            answers = inquirer.prompt(questions=q)
+            if answers is not None:
+                id_office: str = answers['id_office']
+                name: str = answers['name']
+                address: str = answers['address']
+                desks: Stack = self._create_desks()
+                offices.insert_at_end(self.system_config.create_office(
+                    id_office, name, address, desks))
 
-            id_office: str = ""
-            name: str = ""
-            address: str = ""
-
-            while id_office == "":
-                id_office: str = input("Ingrese el id del punto de atención ")
-            while name == "":
-                name: str = input("Ingrese el nombre del punto de atención: ")
-            while address == "":
-                address: str = input(
-                    "Ingrese la dirección del punto de atención: ")
-
-            desks: Stack = self._create_desks()
-            if desks is not None:
-                new_office = self.system_config.create_office(
-                    id_office, name, address, desks)
-                new_offices_list.insert_at_end(new_office)
-
-            else:
-                print("No se pudo crear el punto de venta")
-
-            print("\n ¿Desea agregar otro punto de atención?")
-            print("1. Si")
-            print("2. No")
-            option = input("Seleccione una opción: ")
-            if option == "1":
-                continue
-            elif option == "2":
-                return new_offices_list
+            q = [
+                inquirer.Confirm('continue',
+                                 message="¿Desea agregar otro punto de atención?",
+                                 default=False)]
+            answer = inquirer.prompt(questions=q)
+            if answer is not None:
+                if not answer['continue']:
+                    break
+        return offices
 
     # Option 1.3.1.1 for menu 1.1
-    def _create_desks(self) -> Stack:
-        while True:
-            desks_list: Stack = Stack()
-            id_desk: str = input("Ingrese el id del puesto del escritorio: ")
-            correlative: str = input(
-                "Ingrese el correlativo del escritorio: ")
-            employee: str = input("Ingrese el nombre del empleado: ")
-            res = self.system_config.create_desk(
-                id_desk, correlative, employee)
-            desks_list.push(res)
-            print(f'\n{res}')
 
-            print("\n ¿Desea agregar otro escritorio?")
-            print("1. Si")
-            print("2. No")
-            option = input("Seleccione una opción: ")
-            if option == "1":
-                continue
-            elif option == "2":
-                return desks_list
+    def _create_desks(self) -> Stack:
+
+        desks: Stack = Stack()
+        while True:
+            q = [
+                inquirer.Text('id_desk',
+                              message="Ingrese el id del puesto",
+                              validate=lambda _, x: len(x) > 0 and x.isalnum()),
+                inquirer.Text('name',
+                              message="Ingrese el nombre del puesto",
+                              validate=lambda _, x: len(x) > 0 and x.isalnum())]
+            answers = inquirer.prompt(questions=q)
+            if answers is not None:
+                id_desk: str = answers['id_desk']
+                name: str = answers['name']
+                desks.push(self.system_config.create_desk(id_desk, name))
+
+            q = [
+                inquirer.Confirm('continue',
+                                 message="¿Desea agregar otro puesto?",
+                                 default=False)]
+            answer = inquirer.prompt(questions=q)
+            if answer is not None:
+                if not answer['continue']:
+                    break
+        return desks
 
     # Option 3.2 for menu 1.1
     def _create_transaction(self) -> SinglyLinkedList:
