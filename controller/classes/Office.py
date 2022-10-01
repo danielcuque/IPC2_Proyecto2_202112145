@@ -4,8 +4,8 @@ from controller.base.Stack import Stack
 
 
 class Office:
-    def __init__(self, id_office: int, name: str, address: str):
-        self.id_office: int = id_office
+    def __init__(self, id_office: str, name: str, address: str):
+        self.id_office: str = id_office.strip()
         self.name: str = name.strip()
         self.address: str = address.strip()
         self.active_desks: Stack = Stack()

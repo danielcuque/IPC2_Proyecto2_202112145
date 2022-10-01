@@ -1,6 +1,5 @@
 from xml.dom.minidom import Element, parse
 from texttable import Texttable
-from controller.base.Queue import Queue
 
 from controller.base.SinglyLinkedList import SinglyLinkedList
 from controller.base.Stack import Stack
@@ -44,7 +43,8 @@ class SystemConfig:
         else:
             return "No se pudo limpiar el sistema"
 
-    def create_company(self, id_company: int, name: str, acronym: str, offices: SinglyLinkedList, transactions: SinglyLinkedList) -> str:
+    def create_company(self, id_company: str, name: str, acronym: str, offices: SinglyLinkedList,
+                       transactions: SinglyLinkedList) -> str:
         if self.companyList.is_empty():
             new_company = Company(
                 id_company, name, acronym, offices, transactions)
@@ -63,16 +63,19 @@ class SystemConfig:
             self.companyList.insert_at_end(new_company)
             return "Empresa creada"
 
-    def create_office(self, id_office: int, name: str, address: str, desks: Stack) -> Office:
+    @staticmethod
+    def create_office(id_office: str, name: str, address: str, desks: Stack) -> Office:
         new_office: Office = Office(id_office, name, address)
         new_office.set_inactive_desks(desks)
         return new_office
 
-    def create_desk(self, id_desk: int, correlative: str, employee: str) -> Desk:
+    @staticmethod
+    def create_desk(id_desk: str, correlative: str, employee: str) -> Desk:
         return Desk(id_desk, correlative, employee)
 
-    def create_transaction(self, id_transaction: int, name: str, acronym: str, duration: int) -> TransactionCompany:
-        return TransactionCompany(id_transaction, name, acronym, duration)
+    @staticmethod
+    def create_transaction(id_transaction: str, name: str,  duration: str) -> TransactionCompany:
+        return TransactionCompany(id_transaction, name, duration)
 
     def get_offices(self, company: Element) -> SinglyLinkedList:
         offices_list: SinglyLinkedList = SinglyLinkedList()
@@ -86,7 +89,7 @@ class SystemConfig:
                 0].firstChild.data
             office_address = office.getElementsByTagName("direccion")[
                 0].firstChild.data
-            office_desks: Queue = self.get_desks(office)
+            office_desks: Stack = self.get_desks(office)
 
             new_office: Office = self.create_office(
                 office_id, office_name, office_address, office_desks)
@@ -96,8 +99,8 @@ class SystemConfig:
         return offices_list
 
     @staticmethod
-    def get_desks(office: Element) -> Queue:
-        desk_list: Queue = Queue()
+    def get_desks(office: Element) -> Stack:
+        desk_list: Stack = Stack()
         desks_element = office.getElementsByTagName("escritorio")
 
         for desk in desks_element:
@@ -109,8 +112,8 @@ class SystemConfig:
             desk_employee = desk.getElementsByTagName("encargado")[
                 0].firstChild.data
 
-            new_desk = Desk(int(desk_id), desk_correlative, desk_employee)
-            desk_list.enqueue(new_desk)
+            new_desk = Desk(desk_id, desk_correlative, desk_employee)
+            desk_list.push(new_desk)
 
         return desk_list
 
@@ -130,7 +133,7 @@ class SystemConfig:
                 0].firstChild.data
 
             new_transaction = TransactionCompany(
-                int(transaction_id), transaction_name, transaction_time)
+                transaction_id, transaction_name, transaction_time)
             transactions_list.insert_at_end(new_transaction)
 
         return transactions_list
@@ -145,7 +148,7 @@ class SystemConfig:
                 self.show_company_by_id(company.id_company)
                 node = node.next
 
-    def show_company_by_id(self, id_company: int) -> str or None:
+    def show_company_by_id(self, id_company: str) -> str or None:
         if self.companyList.is_empty():
             return "No hay empresas registradas"
         else:
@@ -199,7 +202,7 @@ class SystemConfig:
             return table.draw()
 
     @staticmethod
-    def show_desks(desks_list: Queue) -> str:
+    def show_desks(desks_list: Stack) -> str:
         if desks_list.is_empty():
             return "No hay escritorios registrados"
         else:
@@ -209,7 +212,7 @@ class SystemConfig:
             table.set_cols_valign(["m", "m", "m"])
 
             table.header(["ID Escritorio", "Identificación", "Encargado"])
-            node = desks_list.items.head
+            node = desks_list.stack.head
             while node is not None:
                 desk: Desk = node.data
                 table.add_row([

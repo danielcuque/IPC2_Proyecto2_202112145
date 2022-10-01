@@ -17,7 +17,7 @@ class SinglyLinkedList:
             self.tail = node
         self.size += 1
         return node
-    
+
     def insert_at_start(self, data):
         node: NodeForSinglyList = NodeForSinglyList(data)
         if self.head is None:
@@ -45,6 +45,17 @@ class SinglyLinkedList:
         self.size += 1
         return node
 
+    def get_at_position(self, position):
+        if position < 0 or position >= self.size:
+            return
+        node = self.head
+        for i in range(position):
+            node = node.next
+        return node.data
+
+    def get_size(self):
+        return self.size
+
     def remove_at_position(self, position):
         if position < 0 or position >= self.size:
             return
@@ -57,7 +68,7 @@ class SinglyLinkedList:
         prev.next = node.next
         self.size -= 1
         return node.data
-    
+
     def remove_at_end(self):
         if self.head is None:
             return
