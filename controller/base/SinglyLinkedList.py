@@ -92,7 +92,7 @@ class SinglyLinkedList:
         self.size -= 1
         return node.data
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return self.head is None
 
     def clear(self):

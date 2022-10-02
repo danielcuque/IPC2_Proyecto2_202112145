@@ -32,3 +32,15 @@ class Office:
 
     def set_clients(self, clients: Queue) -> None:
         self.clients = clients
+
+    def add_client(self, client: str) -> None:
+        self.clients.enqueue(client)
+    
+    def add_active_desk(self, desk: str) -> None:
+        self.active_desks.push(desk)
+    
+    def add_inactive_desk(self, desk: str) -> None:
+        self.inactive_desk.push(desk)
+
+    def get_clients(self) -> Queue:
+        return self.clients

@@ -26,12 +26,14 @@ class SystemConfig:
                     0].firstChild.data
                 company_acronym = company.getElementsByTagName("abreviatura")[
                     0].firstChild.data
-                offices_list: SinglyLinkedList = self.get_offices(company)
-                transactions_list: SinglyLinkedList = self.get_transactions(
-                    company)
 
-                self.create_company(
-                    company_id, company_name, company_acronym, offices_list, transactions_list)
+                new_company: Company = self.create_company(
+                    company_id, company_name, company_acronym)
+
+                if self.get_offices(company, new_company) and self.get_transactions(company, new_company):
+                    self.companyList.insert_at_end(new_company)
+                    print(new_company)
+
             self.show_companies()
 
         except FileNotFoundError:
@@ -44,30 +46,13 @@ class SystemConfig:
         else:
             return "No se pudo limpiar el sistema"
 
-    def create_company(self, id_company: str, name: str, acronym: str, offices: SinglyLinkedList,
-                       transactions: SinglyLinkedList) -> str:
-        if self.companyList.is_empty():
-            new_company = Company(
-                id_company, name, acronym, offices, transactions)
-            self.companyList.insert_at_end(new_company)
-            return "Empresa creada"
-        else:
-            node = self.companyList.head
-            while node is not None:
-                company: Company = node.data
-                if company.id_company == id_company:
-                    return "Ya existe una empresa con ese ID"
-                node = node.next
-
-            new_company = Company(
-                id_company, name, acronym, offices, transactions)
-            self.companyList.insert_at_end(new_company)
-            return "Empresa creada"
+    def create_company(self, id_company: str, name: str, acronym: str) -> Company:
+        new_company: Company = Company(id_company, name, acronym)
+        return new_company
 
     @staticmethod
-    def create_office(id_office: str, name: str, address: str, desks: Stack) -> Office:
+    def create_office(id_office: str, name: str, address: str) -> Office:
         new_office: Office = Office(id_office, name, address)
-        new_office.set_inactive_desks(desks)
         return new_office
 
     @staticmethod
@@ -78,9 +63,8 @@ class SystemConfig:
     def create_transaction(id_transaction: str, name: str,  duration: str) -> TransactionCompany:
         return TransactionCompany(id_transaction, name, duration)
 
-    def get_offices(self, company: Element) -> SinglyLinkedList:
-        offices_list: SinglyLinkedList = SinglyLinkedList()
-        offices_element = company.getElementsByTagName("puntoAtencion")
+    def get_offices(self, company_element: Element, company_to_insert: Company) -> bool:
+        offices_element = company_element.getElementsByTagName("puntoAtencion")
 
         for office in offices_element:
             office: Element
@@ -93,14 +77,15 @@ class SystemConfig:
             office_desks: Stack = self.get_desks(office)
 
             new_office: Office = self.create_office(
-                office_id, office_name, office_address, office_desks)
+                office_id, office_name, office_address)
 
-            offices_list.insert_at_end(new_office)
+            new_office.set_inactive_desks(office_desks)
 
-        return offices_list
+            company_to_insert.add_office(new_office)
 
-    @staticmethod
-    def get_desks(office: Element) -> Stack:
+        return company_to_insert.offices.is_empty()
+
+    def get_desks(self, office: Element) -> Stack:
         desk_list: Stack = Stack()
         desks_element = office.getElementsByTagName("escritorio")
 
@@ -113,15 +98,13 @@ class SystemConfig:
             desk_employee = desk.getElementsByTagName("encargado")[
                 0].firstChild.data
 
-            new_desk = Desk(desk_id, desk_correlative, desk_employee)
+            new_desk = self.create_desk(
+                desk_id, desk_correlative, desk_employee)
             desk_list.push(new_desk)
-
         return desk_list
 
-    @staticmethod
-    def get_transactions(company: Element) -> SinglyLinkedList:
-        transactions_list: SinglyLinkedList = SinglyLinkedList()
-        transactions_element = company.getElementsByTagName(
+    def get_transactions(self, company_element: Element, company_to_insert: Company) -> bool:
+        transactions_element = company_element.getElementsByTagName(
             "transaccion")
 
         for transaction in transactions_element:
@@ -133,11 +116,12 @@ class SystemConfig:
             transaction_time = transaction.getElementsByTagName("tiempoAtencion")[
                 0].firstChild.data
 
-            new_transaction = TransactionCompany(
+            new_transaction = self.create_transaction(
                 transaction_id, transaction_name, transaction_time)
-            transactions_list.insert_at_end(new_transaction)
 
-        return transactions_list
+            company_to_insert.add_transaction(new_transaction)
+
+        return company_to_insert.transactions.is_empty()
 
     def show_companies(self):
         if self.companyList.is_empty():
@@ -146,11 +130,25 @@ class SystemConfig:
             node = self.companyList.head
             while node is not None:
                 company: Company = node.data
-                self.show_company_by_id(company.id_company)
+                self.show_company(company)
                 node = node.next
-    
+
     def show_company_by_id(self, id_company: str) -> str or None:
-        pass
+        node = self.companyList.head
+        while node is not None:
+            company: Company = node.data
+            if company.id_company == id_company:
+                return self.show_company(company)
+            node = node.next
+
+    def show_company(self, company: Company) -> str:
+        console = Console()
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("ID")
+        table.add_column("Nombre")
+        table.add_column("Abreviatura")
+        table.add_row(company.id_company, company.name, company.acronym)
+        console.print(table)
 
     def show_office_by_id_company(self, id_company: str, id_office: str) -> str or None:
         pass
@@ -163,6 +161,4 @@ class SystemConfig:
 
     def clear_system(self) -> bool:
         self.companyList.clear()
-        if self.companyList.is_empty():
-            return True
-        
+        return self.companyList.is_empty()

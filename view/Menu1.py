@@ -11,26 +11,27 @@ class Menu1:
     init_config = InitConfig()
 
     def company_menu(self) -> None:
-        questions = [
-            inquirer.List('menu',
-                          message="Seleccione una opción",
-                          choices=["1. Limpiar sistema",
-                                   "2. Cargar archivo de configuración",
-                                   "3. Crear empresa",
-                                   "4. Cargar archivo de configuración inicial",
-                                   "5. Regresar"])]
-        answer = inquirer.prompt(questions=questions)
-        if answer is not None:
-            if answer['menu'] == "1. Limpiar sistema":
-                self._clear_system()
-            elif answer['menu'] == "2. Cargar archivo de configuración":
-                self._system_config()
-            elif answer['menu'] == "3. Crear empresa":
-                self._create_company_menu()
-            elif answer['menu'] == "4. Cargar archivo de configuración inicial":
-                pass
-            elif answer['menu'] == "5. Regresar":
-                pass
+        while True:
+            questions = [
+                inquirer.List('menu',
+                            message="Seleccione una opción",
+                            choices=["1. Limpiar sistema",
+                                    "2. Cargar archivo de configuración",
+                                    "3. Crear empresa",
+                                    "4. Cargar archivo de configuración inicial",
+                                    "5. Regresar"])]
+            answer = inquirer.prompt(questions=questions)
+            if answer is not None:
+                if answer['menu'] == "1. Limpiar sistema":
+                    self._clear_system()
+                elif answer['menu'] == "2. Cargar archivo de configuración":
+                    self._system_config()
+                elif answer['menu'] == "3. Crear empresa":
+                    self._create_company_menu()
+                elif answer['menu'] == "4. Cargar archivo de configuración inicial":
+                    pass
+                elif answer['menu'] == "5. Regresar":
+                    break
 
     def _clear_system(self) -> None:
         if self.system_config.clear_system():

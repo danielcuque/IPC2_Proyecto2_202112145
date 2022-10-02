@@ -1,12 +1,19 @@
 from controller.base.SinglyLinkedList import SinglyLinkedList
+from controller.classes.Office import Office
+from controller.classes.TransactionCompany import TransactionCompany
 
 
 class Company:
-    def __init__(self, id_company: str, name: str, acronym: str, offices: SinglyLinkedList,
-                 transactions: SinglyLinkedList):
+    def __init__(self, id_company: str, name: str, acronym: str) -> None:
         self.id_company: str = id_company
         self.name: str = name.strip()
         self.acronym: str = acronym.strip()
-        self.offices: SinglyLinkedList = offices
-        self.transactions: SinglyLinkedList = transactions
+        self.offices: SinglyLinkedList = SinglyLinkedList()
+        self.transactions: SinglyLinkedList = SinglyLinkedList()
+
+    def add_office(self, office: Office) -> None:
+        self.offices.insert_at_end(office)
+
+    def add_transaction(self, transaction: TransactionCompany) -> None:
+        self.transactions.insert_at_end(transaction)
     
