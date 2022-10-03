@@ -1,6 +1,7 @@
 
 from controller.base.Queue import Queue
 from controller.base.Stack import Stack
+from controller.classes.Desk import Desk
 
 
 class Office:
@@ -18,6 +19,20 @@ class Office:
     def __repr__(self):
         return f"ID: {self.id_office}, Nombre: {self.name}, Dirección: {self.address}"
 
+
+    # Add new client
+    def add_client(self, client: str) -> None:
+        self.clients.enqueue(client)
+
+    # Add active/inactive desk
+    def add_active_desk(self, desk: Desk) -> None:
+        self.active_desks.push(desk)
+
+    def add_inactive_desk(self, desk: Desk) -> None:
+        self.inactive_desk.push(desk)
+    
+
+    # Getters and setters
     def get_active_desks(self) -> Stack:
         return self.active_desks
 

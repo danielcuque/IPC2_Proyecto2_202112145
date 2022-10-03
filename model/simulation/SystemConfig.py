@@ -18,21 +18,21 @@ class SystemConfig:
             system_info: Element = parse(path_file)
             company_list_element = system_info.getElementsByTagName("empresa")
 
-            for company in company_list_element:
-                company: Element
+            for company_element in company_list_element:
+                company_element: Element
 
-                company_id = company.getAttribute("id")
-                company_name = company.getElementsByTagName("nombre")[
+                company_id = company_element.getAttribute("id")
+                company_name = company_element.getElementsByTagName("nombre")[
                     0].firstChild.data
-                company_acronym = company.getElementsByTagName("abreviatura")[
+                company_acronym = company_element.getElementsByTagName("abreviatura")[
                     0].firstChild.data
 
                 new_company: Company = self.create_company(
                     company_id, company_name, company_acronym)
 
-                if self.get_offices(company, new_company) and self.get_transactions(company, new_company):
-                    self.companyList.insert_at_end(new_company)
-                    print(new_company)
+                self.get_offices(company_element, new_company)
+                self.get_transactions(
+                    company_element, new_company)
 
             self.show_companies()
 
@@ -48,6 +48,7 @@ class SystemConfig:
 
     def create_company(self, id_company: str, name: str, acronym: str) -> Company:
         new_company: Company = Company(id_company, name, acronym)
+        self.companyList.insert_at_end(new_company)
         return new_company
 
     @staticmethod
@@ -106,7 +107,6 @@ class SystemConfig:
     def get_transactions(self, company_element: Element, company_to_insert: Company) -> bool:
         transactions_element = company_element.getElementsByTagName(
             "transaccion")
-
         for transaction in transactions_element:
             transaction: Element
 
@@ -123,9 +123,9 @@ class SystemConfig:
 
         return company_to_insert.transactions.is_empty()
 
-    def show_companies(self):
+    def show_companies(self) -> None:
         if self.companyList.is_empty():
-            return "No hay empresas registradas"
+            print("No hay empresas registradas")
         else:
             node = self.companyList.head
             while node is not None:
@@ -141,13 +141,42 @@ class SystemConfig:
                 return self.show_company(company)
             node = node.next
 
-    def show_company(self, company: Company) -> str:
+    @staticmethod
+    def show_company(company: Company) -> None:
         console = Console()
-        table = Table(show_header=True, header_style="bold magenta")
+        table = Table(show_header=True, header_style="bold blue")
         table.add_column("ID")
         table.add_column("Nombre")
         table.add_column("Abreviatura")
         table.add_row(company.id_company, company.name, company.acronym)
+        console.print(table)
+
+    def show_office(self, office: Office) -> None:
+        console = Console()
+        table = Table(show_header=True, header_style="bold blue")
+        table.add_column("ID")
+        table.add_column("Nombre")
+        table.add_column("Dirección")
+        table.add_row(office.id_office, office.name, office.address)
+        console.print(table)
+
+    def show_desk(self, desk: Desk) -> None:
+        console = Console()
+        table = Table(show_header=True, header_style="bold blue")
+        table.add_column("ID")
+        table.add_column("Identificación")
+        table.add_column("Encargado")
+        table.add_row(desk.id_desk, desk.correlative, desk.employee)
+        console.print(table)
+
+    def show_transaction(self, transaction: TransactionCompany) -> None:
+        console = Console()
+        table = Table(show_header=True, header_style="bold blue")
+        table.add_column("ID")
+        table.add_column("Nombre")
+        table.add_column("Tiempo de atención")
+        table.add_row(transaction.id_transaction,
+                      transaction.name, transaction.duration)
         console.print(table)
 
     def show_office_by_id_company(self, id_company: str, id_office: str) -> str or None:
