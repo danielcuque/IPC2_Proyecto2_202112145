@@ -9,7 +9,7 @@ from model.simulation.InitConfig import InitConfig
 from model.simulation.SystemConfig import SystemConfig
 
 # Utils
-from model.utils.Utils import get_file
+from model.utils.Utils import get_file, ask_yes_no
 
 
 class Menu1:
@@ -92,6 +92,8 @@ class Menu1:
                     self.console.print("Empresa creada", style="bold green")
                     self.system_config.show_company(new_company)
 
+                    self.system_config.show_companies()
+
                     # Show menu to config company
                     self._company_config(new_company)
                 else:
@@ -99,33 +101,45 @@ class Menu1:
                                        style="bold red")
 
             # Ask if the user wants to create a new company
-            questions = [
-                inquirer.List('menu',
-                              message="¿Desea crear otra empresa?",
-                              choices=["1. Si",
-                                       "2. No"])]
-            answer = inquirer.prompt(questions=questions)
-            if answer is not None:
-                if answer['menu'] == "1. Si":
-                    pass
-                elif answer['menu'] == "2. No":
-                    break
-
-    def _company_config(self, company) -> None:
-        while True:
-            # Ask if the user wants to create a new office
-            questions_offices = [
-                inquirer.List("create_office",
-                              message="¿Desea crear una oficina?",
-                              choices=["Sí", "No"])]
-            answer_offices = inquirer.prompt(questions_offices)
-            if answer_offices['create_office'] == "Sí":
-                self._create_office_menu(company)
-            else:
+            if not ask_yes_no("¿Desea crear una nueva empresa?"):
                 break
 
-    def _create_office_menu(self, company: Company) -> None:
+    def _company_config(self, company) -> None:
+
+        # Show the company until the user wants to exit
         while True:
+            # Ask if the user wants to create a new office or new transaction
+            questions_config = [
+                inquirer.List("config_company",
+                              message="Configuración de la empresa",
+                              choices=["1. Crear oficina",
+                                       "2. Crear transacción",
+                                       "3. Regresar", ])]
+
+            # Get the answer
+            answer_config = inquirer.prompt(questions_config)
+
+            # If the answer is not empty
+            if answer_config is not None:
+
+                # If the user wants to create a new office
+                if answer_config['config_company'] == "1. Crear oficina":
+                    self._create_office_menu(company)
+
+                # If the user wants to create a new transaction
+                elif answer_config['config_company'] == "2. Crear transacción":
+                    self._create_transaction_menu(company)
+
+                # If the user wants to go back
+                elif answer_config['config_company'] == "3. Regresar":
+                    break
+
+    def _create_office_menu(self, company: Company) -> None:
+
+        # Show the company until the user wants to exit
+        while True:
+
+            # Get the office fields
             self.console.print("Oficinas de la empresa", style="bold green")
             office_fields: list[inquirer.Text] = [
                 inquirer.Text('id_office', message="Código de la oficina",
@@ -133,23 +147,58 @@ class Menu1:
                 inquirer.Text('name', message="Nombre de la oficina",
                               validate=lambda _, x: len(x) > 0),
                 inquirer.Text('acronym', message="Acrónimo de la oficina",
-                              validate=lambda _, x: len(x) > 0),
-            ]
+                              validate=lambda _, x: len(x) > 0)]
+
+            # Get the answers
             office_answers = inquirer.prompt(office_fields)
+
+            # If the answers are not empty
             if office_answers is not None:
+
+                # Create a new office
                 new_office = self.system_config.create_office(
                     office_answers['id_office'], office_answers['name'], office_answers['acronym'])
+
+                # If the office is not None
                 if new_office is not None:
+
+                    # Show the office
                     self.console.print("Oficina creada", style="bold green")
                     self.system_config.show_office(new_office)
+
+                    # Add the new office to the company
                     company.add_office(new_office)
+
+                    # Show the menu to create a new desk for the office
+                    self._create_desk_menu(new_office)
                 else:
                     self.console.print("No se pudo crear la oficina",
                                        style="bold red")
-            else:
+
+            # Ask if the user wants to create a new office
+            if not ask_yes_no("¿Desea crear una nueva oficina?"):
                 break
 
-    def _create_desk(self, office: Office) -> None:
+    # Menu to create a new desk active/inactive
+    def _create_desk_menu(self, office: Office) -> None:
+        while True:
+            self.console.print("Nuevo escrotirio", style="bold green")
+            desk_options = [
+                inquirer.List('desk_type',
+                              message="Seleccione el tipo de escritorio",
+                              choices=["1. Activo",
+                                       "2. Inactivo",
+                                       "3. Regresar", ])]
+            desk_answer = inquirer.prompt(desk_options)
+            if desk_answer is not None:
+                if desk_answer['desk_type'] == "1. Activo":
+                    self._create_desk(office, True)
+                elif desk_answer['desk_type'] == "2. Inactivo":
+                    self._create_desk(office, False)
+                elif desk_answer['desk_type'] == "3. Regresar":
+                    break
+
+    def _create_desk(self, office: Office, is_active: bool = False) -> None:
         while True:
             desk_fields: list[inquirer.Text] = [
                 inquirer.Text('id_desk', message="Código de la mesa",
@@ -164,18 +213,48 @@ class Menu1:
                 new_desk = self.system_config.create_desk(
                     office, desk_answers['id_desk'], desk_answers['name'], desk_answers['acronym'])
                 if new_desk is not None:
-                    self.console.print("Mesa creada", style="bold green")
+                    self.console.print(
+                        "Escritorio creado", style="bold green")
                     self.system_config.show_desk(new_desk)
-                    office.add_desk(new_desk)
+                    if is_active:
+                        office.add_active_desk(new_desk)
+                        self.console.print(
+                            "Escritorio activo creado", style="bold green")
+                    else:
+                        office.add_inactive_desk(new_desk)
+                        self.console.print(
+                            "Escritorio inactivo creado", style="bold green")
                 else:
                     self.console.print(
-                        "No se pudo crear la mesa", style="bold red")
-            else:
+                        "No se pudo crear el escritorio", style="bold red")
+
+            if not ask_yes_no("¿Desea crear un nuevo escritorio activo?"):
                 break
 
     def _create_transaction_menu(self, company: Company) -> None:
+        # Show the menu until the user select the option to go back
         while True:
-            pass
+            # Ask if the user wants to create a new transaction
+            transaction_fields: list[inquirer.Text] = [
+                inquirer.Text('id_transaction', message="Código de la transacción",
+                              validate=lambda _, x: len(x) > 0),
+                inquirer.Text('time', message="Tiempo de transacción")]
+
+            transaction_answers = inquirer.prompt(transaction_fields)
+            if transaction_answers is not None:
+                new_transaction = self.system_config.create_transaction(
+                    transaction_answers['id_transaction'], transaction_answers['time'])
+                if new_transaction is not None:
+                    self.console.print(
+                        "Transacción creada", style="bold green")
+                    self.system_config.show_transaction(new_transaction)
+                    company.add_transaction(new_transaction)
+                    self.console.print(
+                        "Transacción agregada a la empresa", style="bold green")
+                else:
+                    self.console.print(
+                        "No se pudo crear la transacción", style="bold red")
+                        
 
     def _init_config(self) -> None:
         pass
