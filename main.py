@@ -27,9 +27,9 @@ class Main:
                 if answer['menu'] == "1. Configuración del sistema":
                     menu1.company_menu()
                 elif answer['menu'] == "2. Seleccionar empresa y punto de atención":
-                    pass
+                    menu2.select_company()
                 elif answer['menu'] == "3. Manejo de puntos de atención":
-                    self._point_menu()
+                    menu3.manage_point_menu()
                 elif answer['menu'] == "4. Salir":
                     self._exit()
                 else:

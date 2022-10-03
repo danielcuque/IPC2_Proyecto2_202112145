@@ -1,2 +1,4 @@
 class Menu3:
-    pass
+    
+    def manage_point_menu(self) -> None:
+        pass

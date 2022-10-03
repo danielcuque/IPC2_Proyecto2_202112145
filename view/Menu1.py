@@ -1,3 +1,4 @@
+from wsgiref import validate
 from rich.console import Console
 from rich.table import Table
 import inquirer
@@ -72,8 +73,7 @@ class Menu1:
                 inquirer.Text('name', message="Nombre de la empresa",
                               validate=lambda _, x: len(x) > 0),
                 inquirer.Text('acronym', message="Acrónimo de la empresa",
-                              validate=lambda _, x: len(x) > 0),
-            ]
+                              validate=lambda _, x: len(x) > 0)]
 
             # Get the answers
             company_answers = inquirer.prompt(company_fields)
@@ -140,13 +140,14 @@ class Menu1:
         while True:
 
             # Get the office fields
-            self.console.print("Oficinas de la empresa", style="bold green")
+            self.console.print(
+                "Puntos de atención de la empresa", style="bold green")
             office_fields: list[inquirer.Text] = [
-                inquirer.Text('id_office', message="Código de la oficina",
+                inquirer.Text('id_office', message="Código del punto de venta",
                               validate=lambda _, x: len(x) > 0),
-                inquirer.Text('name', message="Nombre de la oficina",
+                inquirer.Text('name', message="Nombre del punto de venta",
                               validate=lambda _, x: len(x) > 0),
-                inquirer.Text('acronym', message="Acrónimo de la oficina",
+                inquirer.Text('address', message="Dirección del punto de venta",
                               validate=lambda _, x: len(x) > 0)]
 
             # Get the answers
@@ -157,13 +158,14 @@ class Menu1:
 
                 # Create a new office
                 new_office = self.system_config.create_office(
-                    office_answers['id_office'], office_answers['name'], office_answers['acronym'])
+                    office_answers['id_office'], office_answers['name'], office_answers['address'])
 
                 # If the office is not None
                 if new_office is not None:
 
                     # Show the office
-                    self.console.print("Oficina creada", style="bold green")
+                    self.console.print(
+                        "Punto de venta creado", style="bold green")
                     self.system_config.show_office(new_office)
 
                     # Add the new office to the company
@@ -172,17 +174,17 @@ class Menu1:
                     # Show the menu to create a new desk for the office
                     self._create_desk_menu(new_office)
                 else:
-                    self.console.print("No se pudo crear la oficina",
+                    self.console.print("No se pudo crear el punto de venta",
                                        style="bold red")
 
             # Ask if the user wants to create a new office
-            if not ask_yes_no("¿Desea crear una nueva oficina?"):
+            if not ask_yes_no("¿Desea crear un nuevo punto de venta?"):
                 break
 
     # Menu to create a new desk active/inactive
     def _create_desk_menu(self, office: Office) -> None:
         while True:
-            self.console.print("Nuevo escrotirio", style="bold green")
+            self.console.print("Nuevo escrotorio", style="bold green")
             desk_options = [
                 inquirer.List('desk_type',
                               message="Seleccione el tipo de escritorio",
@@ -238,12 +240,13 @@ class Menu1:
             transaction_fields: list[inquirer.Text] = [
                 inquirer.Text('id_transaction', message="Código de la transacción",
                               validate=lambda _, x: len(x) > 0),
-                inquirer.Text('time', message="Tiempo de transacción")]
+                inquirer.Text('name', message="Nombre de la transacción"),
+                inquirer.Text('time', message="Tiempo de transacción", validate=lambda _, x: len(x) > 0 and x.isdigit())]
 
             transaction_answers = inquirer.prompt(transaction_fields)
             if transaction_answers is not None:
                 new_transaction = self.system_config.create_transaction(
-                    transaction_answers['id_transaction'], transaction_answers['time'])
+                    transaction_answers['id_transaction'], transaction_answers['name'], transaction_answers['time'])
                 if new_transaction is not None:
                     self.console.print(
                         "Transacción creada", style="bold green")
@@ -254,7 +257,9 @@ class Menu1:
                 else:
                     self.console.print(
                         "No se pudo crear la transacción", style="bold red")
-                        
+
+            if not ask_yes_no("¿Desear crear una nueva transacción?"):
+                break
 
     def _init_config(self) -> None:
         pass

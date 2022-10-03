@@ -1,2 +1,4 @@
 class Menu2:
-    pass
+    
+    def select_company(self) -> None:
+        pass

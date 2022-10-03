@@ -2,8 +2,11 @@ from xml.dom.minidom import Element, parse
 from rich.console import Console
 from rich.table import Table
 
+# Structures
 from controller.base.SinglyLinkedList import SinglyLinkedList
 from controller.base.Stack import Stack
+
+# Classes
 from controller.classes.Company import Company
 from controller.classes.Desk import Desk
 from controller.classes.Office import Office
@@ -12,6 +15,7 @@ from controller.classes.TransactionCompany import TransactionCompany
 
 class SystemConfig:
     companyList: SinglyLinkedList = SinglyLinkedList()
+    console = Console()
 
     def system_config(self, path_file):
         try:
@@ -127,11 +131,21 @@ class SystemConfig:
         if self.companyList.is_empty():
             print("No hay empresas registradas")
         else:
+
+            # Create the table for the companies
+            table = Table(show_header=True, header_style="bold blue", title="Empresas")
+            table.add_column("ID")
+            table.add_column("Nombre")
+            table.add_column("Abreviatura")
+
             node = self.companyList.head
             while node is not None:
                 company: Company = node.data
-                self.show_company(company)
+                table.add_row(company.id_company,
+                              company.name, company.acronym)
                 node = node.next
+
+            self.console.print(table)
 
     def show_company_by_id(self, id_company: str) -> str or None:
         node = self.companyList.head
@@ -141,43 +155,69 @@ class SystemConfig:
                 return self.show_company(company)
             node = node.next
 
-    @staticmethod
-    def show_company(company: Company) -> None:
-        console = Console()
+    def show_company(self, company: Company) -> None:
         table = Table(show_header=True, header_style="bold blue")
         table.add_column("ID")
         table.add_column("Nombre")
         table.add_column("Abreviatura")
         table.add_row(company.id_company, company.name, company.acronym)
-        console.print(table)
+        self.console.print(table)
+
+    def show_offices(self, company: Company) -> None:
+        if company.offices.is_empty():
+            print("No hay oficinas registradas")
+        else:
+            node = company.offices.head
+            while node is not None:
+                office: Office = node.data
+                self.show_office(office)
+                self.show_desks(office)
+                node = node.next
 
     def show_office(self, office: Office) -> None:
-        console = Console()
         table = Table(show_header=True, header_style="bold blue")
         table.add_column("ID")
         table.add_column("Nombre")
         table.add_column("Dirección")
         table.add_row(office.id_office, office.name, office.address)
-        console.print(table)
+        self.console.print(table)
+
+    def show_desks(self, office: Office) -> None:
+        if office.active_desks.is_empty() and office.inactive_desks.is_empty():
+            self.console.print(
+                "No hay escritorios registrados", style="bold red")
+        else:
+            self.console.print()
+            node = office.get_head_active_desks()
+            while node is not None:
+                desk: Desk = node.data
+                self.show_desk(desk)
+                node = node.next
+
+            node = office.get_head_inactive_desks()
+            while node is not None:
+                desk: Desk = node.data
+                self.show_desk(desk)
+                node = node.next
 
     def show_desk(self, desk: Desk) -> None:
-        console = Console()
+        self.console = Console()
         table = Table(show_header=True, header_style="bold blue")
         table.add_column("ID")
         table.add_column("Identificación")
         table.add_column("Encargado")
         table.add_row(desk.id_desk, desk.correlative, desk.employee)
-        console.print(table)
+        self.console.print(table)
 
     def show_transaction(self, transaction: TransactionCompany) -> None:
-        console = Console()
-        table = Table(show_header=True, header_style="bold blue")
+        self.console = Console()
+        table = Table(show_header=True, header_style="bold blue", title="Transacción")
         table.add_column("ID")
         table.add_column("Nombre")
         table.add_column("Tiempo de atención")
         table.add_row(transaction.id_transaction,
-                      transaction.name, transaction.duration)
-        console.print(table)
+                      transaction.name, transaction.time)
+        self.console.print(table)
 
     def show_office_by_id_company(self, id_company: str, id_office: str) -> str or None:
         pass
