@@ -11,6 +11,7 @@ from model.simulation.SystemConfig import SystemConfig
 
 # Utils
 from model.utils.Utils import get_file, ask_yes_no
+from model.utils.ShowProperties import show_companies, show_company_by_id, show_company, show_offices, show_office, show_desks, show_desk, show_transaction
 
 
 class Menu1:
@@ -90,9 +91,7 @@ class Menu1:
 
                     # Show the company
                     self.console.print("Empresa creada", style="bold green")
-                    self.system_config.show_company(new_company)
-
-                    self.system_config.show_companies()
+                    show_company(new_company)
 
                     # Show menu to config company
                     self._company_config(new_company)
@@ -166,7 +165,7 @@ class Menu1:
                     # Show the office
                     self.console.print(
                         "Punto de venta creado", style="bold green")
-                    self.system_config.show_office(new_office)
+                    show_office(new_office)
 
                     # Add the new office to the company
                     company.add_office(new_office)
@@ -200,38 +199,37 @@ class Menu1:
                 elif desk_answer['desk_type'] == "3. Regresar":
                     break
 
-    def _create_desk(self, office: Office, is_active: bool = False) -> None:
-        while True:
-            desk_fields: list[inquirer.Text] = [
-                inquirer.Text('id_desk', message="Código de la mesa",
-                              validate=lambda _, x: len(x) > 0),
-                inquirer.Text('name', message="Nombre de la mesa",
-                              validate=lambda _, x: len(x) > 0),
-                inquirer.Text('acronym', message="Acrónimo de la mesa",
-                              validate=lambda _, x: len(x) > 0),
-            ]
-            desk_answers = inquirer.prompt(desk_fields)
-            if desk_answers is not None:
-                new_desk = self.system_config.create_desk(
-                    office, desk_answers['id_desk'], desk_answers['name'], desk_answers['acronym'])
-                if new_desk is not None:
-                    self.console.print(
-                        "Escritorio creado", style="bold green")
-                    self.system_config.show_desk(new_desk)
-                    if is_active:
-                        office.add_active_desk(new_desk)
-                        self.console.print(
-                            "Escritorio activo creado", style="bold green")
-                    else:
-                        office.add_inactive_desk(new_desk)
-                        self.console.print(
-                            "Escritorio inactivo creado", style="bold green")
-                else:
-                    self.console.print(
-                        "No se pudo crear el escritorio", style="bold red")
-
-            if not ask_yes_no("¿Desea crear un nuevo escritorio activo?"):
+            if not ask_yes_no("¿Desea crear un nuevo escritorio?"):
                 break
+
+    def _create_desk(self, office: Office, is_active: bool = False) -> None:
+        desk_fields: list[inquirer.Text] = [
+            inquirer.Text('id_desk', message="Código de escritorio",
+                          validate=lambda _, x: len(x) > 0),
+            inquirer.Text('name', message="Nombre de escritorio",
+                          validate=lambda _, x: len(x) > 0),
+            inquirer.Text('employee', message="Encargado de escritorio",
+                          validate=lambda _, x: len(x) > 0),
+        ]
+        desk_answers = inquirer.prompt(desk_fields)
+        if desk_answers is not None:
+            new_desk = self.system_config.create_desk(
+                desk_answers['id_desk'], desk_answers['name'], desk_answers['employee'])
+            if new_desk is not None:
+                self.console.print(
+                    "Escritorio creado", style="bold green")
+                show_desk(new_desk)
+                if is_active:
+                    office.add_active_desk(new_desk)
+                    self.console.print(
+                        "Escritorio activo creado", style="bold green")
+                else:
+                    office.add_inactive_desk(new_desk)
+                    self.console.print(
+                        "Escritorio inactivo creado", style="bold green")
+            else:
+                self.console.print(
+                    "No se pudo crear el escritorio", style="bold red")
 
     def _create_transaction_menu(self, company: Company) -> None:
         # Show the menu until the user select the option to go back
@@ -250,7 +248,7 @@ class Menu1:
                 if new_transaction is not None:
                     self.console.print(
                         "Transacción creada", style="bold green")
-                    self.system_config.show_transaction(new_transaction)
+                    show_transaction(new_transaction)
                     company.add_transaction(new_transaction)
                     self.console.print(
                         "Transacción agregada a la empresa", style="bold green")
