@@ -49,7 +49,7 @@ class Menu1:
 
     def _clear_system(self) -> None:
         if self.system_config.clear_system():
-            print("Sistema limpio")
+            self.console.print("Sistema limpio", style="bold green")
         else:
             print("No se pudo limpiar el sistema")
 
@@ -70,7 +70,7 @@ class Menu1:
             self.console.print("Crear empresa", style="bold green")
             company_fields: list[inquirer.Text] = [
                 inquirer.Text('id_company', message="Código de la empresa",
-                              validate=lambda _, x: len(x) > 0),
+                              validate=lambda _, x: len(x) > 0 and not self.valite_if_company_exist(x)),
                 inquirer.Text('name', message="Nombre de la empresa",
                               validate=lambda _, x: len(x) > 0),
                 inquirer.Text('acronym', message="Acrónimo de la empresa",
@@ -261,3 +261,6 @@ class Menu1:
 
     def _init_config(self) -> None:
         pass
+
+    def valite_if_company_exist(self, id_company: str) -> bool:
+        return self.system_config.search_company_by_id(id_company) is not None

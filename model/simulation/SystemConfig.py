@@ -12,13 +12,13 @@ from controller.classes.Company import Company
 from controller.classes.Desk import Desk
 from controller.classes.Office import Office
 from controller.classes.TransactionCompany import TransactionCompany
+from controller.store.StoreData import StoreData
 
 # Utils
 from model.utils.ShowProperties import show_companies
 
 
 class SystemConfig:
-    list_of_companies: SinglyLinkedList = SinglyLinkedList()
     console = Console()
 
     def system_config(self, path_file):
@@ -42,21 +42,21 @@ class SystemConfig:
                 self.get_transactions(
                     company_element, new_company)
 
-            show_companies(self.list_of_companies)
+            show_companies(StoreData.list_of_companies)
 
         except FileNotFoundError:
             print("Ocurrió un error al leer el fichero")
 
     def clear_system(self) -> str:
-        self.list_of_companies.clear()
-        if self.list_of_companies.is_empty():
+        StoreData.list_of_companies.clear()
+        if StoreData.list_of_companies.is_empty():
             return "Sistema limpio"
         else:
             return "No se pudo limpiar el sistema"
 
     def create_company(self, id_company: str, name: str, acronym: str) -> Company:
         new_company: Company = Company(id_company, name, acronym)
-        self.list_of_companies.insert_at_end(new_company)
+        StoreData.list_of_companies.insert_at_end(new_company)
         return new_company
 
     @staticmethod
@@ -132,11 +132,11 @@ class SystemConfig:
         return company_to_insert.transactions.is_empty()
 
     def clear_system(self) -> bool:
-        self.list_of_companies.clear()
-        return self.list_of_companies.is_empty()
+        StoreData.list_of_companies.clear()
+        return StoreData.list_of_companies.is_empty()
 
     def search_company_by_name(self, name: str) -> Company:
-        node: NodeForSinglyList = self.list_of_companies.head
+        node: NodeForSinglyList = StoreData.list_of_companies.head
         while node is not None:
             company: Company = node.data
             if company.name == name:
@@ -145,7 +145,7 @@ class SystemConfig:
         return None
 
     def search_company_by_id(self, id_company: str) -> Company:
-        node: NodeForSinglyList = self.list_of_companies.head
+        node: NodeForSinglyList = StoreData.list_of_companies.head
         while node is not None:
             company: Company = node.data
             if company.id_company == id_company:

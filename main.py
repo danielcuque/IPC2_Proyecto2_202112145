@@ -1,5 +1,6 @@
 import inquirer
 
+# Menus for app
 from view.Menu1 import Menu1
 from view.Menu2 import Menu2
 from view.Menu3 import Menu3

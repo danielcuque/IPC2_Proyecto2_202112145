@@ -7,6 +7,7 @@ from controller.base.SinglyLinkedList import SinglyLinkedList
 # Classes
 from controller.classes.Company import Company
 from controller.classes.Office import Office
+from controller.store.StoreData import StoreData
 
 # Controllers
 from model.simulation.SystemConfig import SystemConfig
@@ -17,11 +18,10 @@ from model.utils.ShowProperties import show_companies, show_company_by_id, show_
 
 class Menu2:
 
-    selected_office = None
     system_config = SystemConfig()
 
     def select_company(self) -> None:
-        companies: SinglyLinkedList = self.system_config.list_of_companies
+        companies: SinglyLinkedList = StoreData.list_of_companies
         choices = []
         if companies.is_empty():
             print("No hay empresas registradas")
@@ -36,10 +36,10 @@ class Menu2:
         answer = inquirer.prompt(questions=options)
         if answer is not None:
             company_name = answer['company']
-            selected_company: Company = self.system_config.search_company_by_name(
+            StoreData.selected_company = self.system_config.search_company_by_name(
                 company_name)
-            show_company(selected_company)
-            self.select_office(selected_company.offices)
+            show_company(StoreData.selected_company)
+            self.select_office(StoreData.selected_company.offices)
 
     def select_office(self, list_of_offices: SinglyLinkedList) -> None:
         console = Console()
@@ -58,7 +58,7 @@ class Menu2:
             answer = inquirer.prompt(questions=options)
             if answer is not None:
                 office_name = answer['office']
-                self.selected_office = self.system_config.search_office_by_name(
+                StoreData.selected_office = self.system_config.search_office_by_name(
                     list_of_offices, office_name)
-                    
-                show_office(self.selected_office)
+
+                show_office(StoreData.selected_office)
