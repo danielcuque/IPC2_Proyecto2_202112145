@@ -17,10 +17,19 @@ class Company:
     def add_transaction(self, transaction: TransactionCompany) -> None:
         self.transactions.insert_at_end(transaction)
 
-    def search_office(self, id_office: str) -> Office:
+
+    def search_office_by_id(self, id_office: str) -> Office:
         node = self.offices.head
         while node is not None:
             office: Office = node.data
             if office.id_office == id_office:
+                return office
+            node = node.next
+
+    def search_office_by_name(self, name: str) -> Office:
+        node = self.offices.head
+        while node is not None:
+            office: Office = node.data
+            if office.name == name:
                 return office
             node = node.next

@@ -135,40 +135,4 @@ class SystemConfig:
         StoreData.list_of_companies.clear()
         return StoreData.list_of_companies.is_empty()
 
-    def search_company_by_name(self, name: str) -> Company:
-        node: NodeForSinglyList = StoreData.list_of_companies.head
-        while node is not None:
-            company: Company = node.data
-            if company.name == name:
-                return company
-            node = node.next
-        return None
-
-    def search_company_by_id(self, id_company: str) -> Company:
-        node: NodeForSinglyList = StoreData.list_of_companies.head
-        while node is not None:
-            company: Company = node.data
-            if company.id_company == id_company:
-                return company
-            node = node.next
-        return None
-
-    @staticmethod
-    def search_office_by_name(list_of_offices: SinglyLinkedList, office_name: str) -> Office:
-        node: NodeForSinglyList = list_of_offices.head
-        while node is not None:
-            office: Office = node.data
-            if office.name == office_name:
-                return office
-            node = node.next
-        return None
-
-    @staticmethod
-    def search_office_by_id(list_of_offices: SinglyLinkedList, id_office: str) -> Office:
-        node: NodeForSinglyList = list_of_offices.head
-        while node is not None:
-            office: Office = node.data
-            if office.id_office == id_office:
-                return office
-            node = node.next
-        return None
+    

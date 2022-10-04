@@ -22,8 +22,11 @@ class Office:
 
     # Add new client
 
-    def add_client(self, client: str) -> None:
-        self.clients.enqueue(client)
+    def add_client(self, client: str) -> NodeForSinglyList:
+        return self.clients.enqueue(client)
+
+    def remove_client(self) -> NodeForSinglyList:
+        return self.clients.dequeue()
 
     # Add active/inactive desk
     def add_active_desk(self, desk: Desk) -> None:

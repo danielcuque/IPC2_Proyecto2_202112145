@@ -1,4 +1,5 @@
 from controller.base.SinglyLinkedList import SinglyLinkedList
+from controller.classes.TransactionClient import TransactionClient
 
 
 class Client:
@@ -15,3 +16,6 @@ class Client:
 
     def get_transactions(self):
         return self.transactions
+
+    def add_transaction_for_client(self, transaction: TransactionClient):
+        self.transactions.insert_at_end(transaction)

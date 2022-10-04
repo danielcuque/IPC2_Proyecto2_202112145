@@ -5,6 +5,7 @@ import inquirer
 
 from controller.classes.Company import Company
 from controller.classes.Office import Office
+from controller.store.StoreData import StoreData
 
 from model.simulation.InitConfig import InitConfig
 from model.simulation.SystemConfig import SystemConfig
@@ -41,7 +42,7 @@ class Menu1:
                 elif answer['menu'] == "3. Crear empresa":
                     self._create_company_menu()
                 elif answer['menu'] == "4. Cargar archivo de configuración inicial":
-                    pass
+                    self._init_config()
                 elif answer['menu'] == "5. Regresar":
                     break
 
@@ -260,7 +261,18 @@ class Menu1:
                 break
 
     def _init_config(self) -> None:
-        pass
+        if StoreData.list_of_companies.is_empty():
+            self.console.print(
+                "No hay empresas configuradas", style="bold red")
+        else:
+            path_file: str = get_file()
+            if path_file is not None:
+                self.init_config.init_config(path_file)
+                self.console.print(
+                    "Configuración inicializada", style="bold green")
+            else:
+                self.console.print("No se pudo inicializar la configuración",
+                                   style="bold red")
 
     def valite_if_company_exist(self, id_company: str) -> bool:
         return self.system_config.search_company_by_id(id_company) is not None
