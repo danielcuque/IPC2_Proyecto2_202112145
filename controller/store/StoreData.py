@@ -24,7 +24,7 @@ class StoreData:
             node = node.next
         return None
 
-    def search_company_by_id(self, id_company: str) -> Company:
+    def search_company_by_id(id_company: str) -> Company:
         node: NodeForSinglyList = StoreData.list_of_companies.head
         while node is not None:
             company: Company = node.data
@@ -32,19 +32,3 @@ class StoreData:
                 return company
             node = node.next
         return None
-
-    def search_office_by_id(self, id_office: str) -> Office:
-        node = self.offices.head
-        while node is not None:
-            office: Office = node.data
-            if office.id_office == id_office:
-                return office
-            node = node.next
-
-    def search_office_by_name(self, name: str) -> Office:
-        node = self.offices.head
-        while node is not None:
-            office: Office = node.data
-            if office.name == name:
-                return office
-            node = node.next

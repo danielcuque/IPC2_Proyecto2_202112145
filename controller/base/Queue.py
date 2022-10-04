@@ -15,6 +15,11 @@ class Queue:
             return None
         return self.items.remove_at_position(self.items.size - 1)
 
+    def dequeue_by_index(self, index: int) -> NodeForSinglyList or None:
+        if self.items.size == 0:
+            return None
+        return self.items.remove_at_position(index)
+
     def traverse(self) -> None:
         node = self.items.head
         while node is not None:

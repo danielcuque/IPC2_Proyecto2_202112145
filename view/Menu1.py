@@ -275,4 +275,4 @@ class Menu1:
                                    style="bold red")
 
     def valite_if_company_exist(self, id_company: str) -> bool:
-        return self.system_config.search_company_by_id(id_company) is not None
+        return StoreData.search_company_by_id(id_company) is not None

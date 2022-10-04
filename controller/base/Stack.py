@@ -19,10 +19,14 @@ class Stack:
     def pop(self) -> NodeForSinglyList or None:
         if self.stack.is_empty():
             return
-        node = self.stack.head
-        self.stack.head = self.stack.head.next
-        self.stack.size -= 1
-        return node.data
+        return self.stack.remove_at_start()
+
+    def pop_by_index(self, index) -> NodeForSinglyList or None:
+        if index < 0 or index >= self.stack.size:
+            return
+        if index == 0:
+            return self.pop()
+        return self.stack.remove_at_position(index)
 
     def is_empty(self) -> bool:
         return self.stack.is_empty()

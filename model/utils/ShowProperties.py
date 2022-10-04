@@ -42,7 +42,7 @@ def show_company_by_id(list_of_companies: SinglyLinkedList, id_company: str) -> 
 
 def show_company(company: Company) -> None:
     console = Console()
-    table = Table(show_header=True, header_style="bold blue")
+    table = Table(show_header=True, header_style="bold blue", title="Empresa")
     table.add_column("ID")
     table.add_column("Nombre")
     table.add_column("Abreviatura")
@@ -64,7 +64,7 @@ def show_offices(company: Company) -> None:
 
 def show_office(office: Office) -> None:
     console = Console()
-    table = Table(show_header=True, header_style="bold blue")
+    table = Table(show_header=True, header_style="bold blue", title="Punto de atención")
     table.add_column("ID")
     table.add_column("Nombre")
     table.add_column("Dirección")
@@ -92,7 +92,7 @@ def show_desks(office: Office) -> None:
 
 def show_desk( desk: Desk) -> None:
     console = Console()
-    table = Table(show_header=True, header_style="bold blue")
+    table = Table(show_header=True, header_style="bold blue", title="Escritorio")
     table.add_column("ID")
     table.add_column("Identificación")
     table.add_column("Encargado")

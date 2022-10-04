@@ -35,8 +35,21 @@ class Office:
     def add_inactive_desk(self, desk: Desk) -> None:
         self.inactive_desks.push(desk)
 
-    # Getters and setters
+    def search_desk_by_id(self, id_desk: str, is_active: bool = False) -> Desk:
+        list_of_desks: Stack = self.active_desks if is_active else self.inactive_desks
 
+        if list_of_desks.is_empty():
+            return None
+
+        node: NodeForSinglyList = list_of_desks.stack.head
+        while node is not None:
+            desk: Desk = node.data
+            if desk.id_desk == id_desk:
+                return desk
+            node = node.next
+
+
+    # Getters and setters
     def get_active_desks(self) -> Stack:
         return self.active_desks
 
