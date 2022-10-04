@@ -64,7 +64,8 @@ def show_offices(company: Company) -> None:
 
 def show_office(office: Office) -> None:
     console = Console()
-    table = Table(show_header=True, header_style="bold blue", title="Punto de atención")
+    table = Table(show_header=True, header_style="bold blue",
+                  title="Punto de atención")
     table.add_column("ID")
     table.add_column("Nombre")
     table.add_column("Dirección")
@@ -72,32 +73,35 @@ def show_office(office: Office) -> None:
     console.print(table)
 
 
-def show_desks(office: Office) -> None:
+def show_desks(list_of_desks: SinglyLinkedList, is_active: bool = False) -> None:
     console = Console()
-    if office.active_desks.is_empty() and office.inactive_desks.is_empty():
+    if list_of_desks.is_empty():
         console.print(
             "No hay escritorios registrados", style="bold red")
     else:
-        console.print()
-        node = office.get_head_active_desks()
+        # Create the table for the active desks
+        title = "Escritorios activos" if is_active else "Escritorios inactivos"
+        table = Table(show_header=True, header_style="bold blue", title=title)
+        table.add_column("ID")
+        table.add_column("Identificación")
+        table.add_column("Encargado")
+        node = list_of_desks.head
         while node is not None:
             desk: Desk = node.data
-            show_desk(desk)
-            node = node.next
-        node = office.get_head_inactive_desks()
-        while node is not None:
-            desk: Desk = node.data
-            show_desk(desk)
+            table.add_row(desk.id_desk, desk.correlative, desk.employee)
             node = node.next
 
-def show_desk( desk: Desk) -> None:
+
+def show_desk(desk: Desk) -> None:
     console = Console()
-    table = Table(show_header=True, header_style="bold blue", title="Escritorio")
+    table = Table(show_header=True, header_style="bold blue",
+                  title="Escritorio")
     table.add_column("ID")
     table.add_column("Identificación")
     table.add_column("Encargado")
     table.add_row(desk.id_desk, desk.correlative, desk.employee)
     console.print(table)
+
 
 def show_transaction(transaction: TransactionCompany) -> None:
     console = Console()

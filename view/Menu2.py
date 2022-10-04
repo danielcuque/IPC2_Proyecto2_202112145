@@ -21,25 +21,26 @@ class Menu2:
     system_config = SystemConfig()
 
     def select_company(self) -> None:
+        console = Console()
         companies: SinglyLinkedList = StoreData.list_of_companies
         choices = []
         if companies.is_empty():
-            print("No hay empresas registradas")
+            console.print("No hay empresas registradas", style="bold red")
         else:
             node = companies.head
             while node is not None:
                 company: Company = node.data
                 choices.append(company.name)
                 node = node.next
-        options = [
-            inquirer.List('company', message="Seleccione una empresa", choices=choices)]
-        answer = inquirer.prompt(questions=options)
-        if answer is not None:
-            company_name = answer['company']
-            StoreData.selected_company = StoreData.search_company_by_name(
-                company_name)
-            show_company(StoreData.selected_company)
-            self.select_office(StoreData.selected_company)
+            options = [
+                inquirer.List('company', message="Seleccione una empresa", choices=choices)]
+            answer = inquirer.prompt(questions=options)
+            if answer is not None:
+                company_name = answer['company']
+                StoreData.selected_company = StoreData.search_company_by_name(
+                    company_name)
+                show_company(StoreData.selected_company)
+                self.select_office(StoreData.selected_company)
 
     def select_office(self, company: Company) -> None:
         console = Console()

@@ -56,7 +56,7 @@ class SinglyLinkedList:
     def get_size(self):
         return self.size
 
-    def remove_at_position(self, position):
+    def remove_at_position(self, position: int) -> NodeForSinglyList or None:
         if position < 0 or position >= self.size:
             return
         if position == 0:
@@ -67,9 +67,9 @@ class SinglyLinkedList:
         node: NodeForSinglyList = prev.next
         prev.next = node.next
         self.size -= 1
-        return node.data
+        return node
 
-    def remove_at_end(self):
+    def remove_at_end(self) -> NodeForSinglyList or None:
         if self.head is None:
             return
         if self.head.next is None:
@@ -83,14 +83,15 @@ class SinglyLinkedList:
         prev.next = None
         self.tail = prev
         self.size -= 1
+        return self.tail
 
-    def remove_at_start(self):
+    def remove_at_start(self) -> NodeForSinglyList or None:
         if self.head is None:
             return
         node = self.head
         self.head = self.head.next
         self.size -= 1
-        return node.data
+        return node
 
     def is_empty(self) -> bool:
         return self.head is None

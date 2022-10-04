@@ -21,7 +21,7 @@ class Stack:
             return
         return self.stack.remove_at_start()
 
-    def pop_by_index(self, index) -> NodeForSinglyList or None:
+    def pop_by_index(self, index: int) -> NodeForSinglyList or None:
         if index < 0 or index >= self.stack.size:
             return
         if index == 0:
@@ -36,3 +36,6 @@ class Stack:
 
     def show_stack(self) -> None:
         self.stack.show_list()
+
+    def get_size(self) -> int:
+        return self.stack.size

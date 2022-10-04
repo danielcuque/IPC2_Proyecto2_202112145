@@ -48,6 +48,17 @@ class Office:
                 return desk
             node = node.next
 
+    def get_index_of_desk(self, desk: Desk, is_active: bool = False) -> int:
+        count = 0
+        list_of_desks: Stack = self.active_desks if is_active else self.inactive_desks
+        node: NodeForSinglyList = list_of_desks.stack.head
+
+        while node is not None:
+            if node.data == desk:
+                return count
+            count += 1
+            node = node.next
+
 
     # Getters and setters
     def get_active_desks(self) -> Stack:

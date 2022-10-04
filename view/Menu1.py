@@ -71,7 +71,7 @@ class Menu1:
             self.console.print("Crear empresa", style="bold green")
             company_fields: list[inquirer.Text] = [
                 inquirer.Text('id_company', message="Código de la empresa",
-                              validate=lambda _, x: len(x) > 0 and not self.valite_if_company_exist(x)),
+                              validate=lambda _, x: len(x) > 0 and not self.validate_if_company_exists(x)),
                 inquirer.Text('name', message="Nombre de la empresa",
                               validate=lambda _, x: len(x) > 0),
                 inquirer.Text('acronym', message="Acrónimo de la empresa",
@@ -274,5 +274,5 @@ class Menu1:
                 self.console.print("No se pudo inicializar la configuración",
                                    style="bold red")
 
-    def valite_if_company_exist(self, id_company: str) -> bool:
+    def validate_if_company_exists(self, id_company: str) -> bool:
         return StoreData.search_company_by_id(id_company) is not None

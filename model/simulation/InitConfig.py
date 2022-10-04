@@ -11,7 +11,7 @@ from controller.classes.TransactionClient import TransactionClient
 from controller.store.StoreData import StoreData
 from model.simulation.SystemConfig import SystemConfig
 
-from model.utils.ShowProperties import show_company, show_office, show_companies, show_company_by_id
+from model.utils.ShowProperties import show_company, show_desk, show_desks, show_office, show_companies, show_company_by_id
 
 
 class InitConfig:
@@ -37,7 +37,6 @@ class InitConfig:
                     search_office = search_company.search_office_by_id(
                         id_office)
                     if search_office is not None:
-
                         # Active desks
                         self.get_active_desks(initial_config, search_office)
 
@@ -46,8 +45,6 @@ class InitConfig:
                     else:
                         self.console.print(
                             "No se encontro el punto de venta", style="bold red")
-
-                self.get_clients(initial_config)
             else:
                 self.console.print("No hay configuración inicial")
 
@@ -67,7 +64,6 @@ class InitConfig:
         # Get the list of active desks
         list_of_active_desks: Element = config_element.getElementsByTagName(
             "escritorio")
-
         # Traverse the list of active desks
         for active_desk in list_of_active_desks:
 
@@ -75,12 +71,27 @@ class InitConfig:
             active_desk: Element
 
             # Get the attributes of the active desk
-            id_active_desk: str = active_desk.getAttribute("idPunto")
-            
-            # Add the active desk to the list of active desks of the office
-            desk_for_change_state: Desk = office.search_desk_by_id(id_active_desk)
+            id_active_desk: str = active_desk.getAttribute("idEscritorio")
+
+            # Search the active desk in the list of inactive desks
+            desk_for_change_state: Desk = office.search_desk_by_id(
+                id_active_desk)
+
+            # If the desk is not None, change the state of the desk
             if desk_for_change_state is not None:
-                pass
+
+                # Pop by index due the desk could not be ordered
+                inactive_desk_for_change = office.inactive_desks.pop_by_index(
+                    office.get_index_of_desk(desk_for_change_state))
+
+                # The function return a Node, so we need to get the data
+                if inactive_desk_for_change is not None:
+                    desk: Desk = inactive_desk_for_change.data
+                    office.add_active_desk(desk)
+                else:
+                    self.console.print(
+                        f'No se encontro el escritorio{id_active_desk}', style="bold red")
+        show_desks(office.active_desks, True)
 
     def get_transactions_for_clients(self, list_of_transactions_element: Element, client: Client):
         list_of_transactions: Element = list_of_transactions_element.getElementsByTagName(
