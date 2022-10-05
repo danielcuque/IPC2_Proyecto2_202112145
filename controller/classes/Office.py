@@ -14,6 +14,20 @@ class Office:
         self.inactive_desks: Stack = Stack()
         self.clients: Queue = Queue()
 
+    # Attention times
+    max_time_attention: int = 0
+    min_time_attention: int = 0
+    average_time_attention: int = 0
+
+    # Waiting times
+    max_time_waiting: int = 0
+    min_time_waiting: int = 0
+    average_time_waiting: int = 0
+
+    # Clients in queue/ out queue
+    clients_in_queue: int = 0
+    clients_out_queue: int = 0
+
     def __str__(self):
         return f"ID: {self.id_office}, Nombre: {self.name}, Dirección: {self.address}"
 
@@ -23,9 +37,12 @@ class Office:
     # Add new client
 
     def add_client(self, client: str) -> NodeForSinglyList:
+        self.clients_in_queue += 1
         return self.clients.enqueue(client)
 
-    def remove_client(self) -> NodeForSinglyList:
+    def remove_client(self) -> NodeForSinglyList or None:
+        self.clients_out_queue += 1
+        self.clients_in_queue -= 1
         return self.clients.dequeue()
 
     # Add active/inactive desk
@@ -33,16 +50,14 @@ class Office:
         self.active_desks.push(desk)
 
     def active_desk_by_algorithm(self) -> Desk:
-        desk_inactive_node: NodeForSinglyList = self.inactive_desks.pop()
-        self.active_desks.push(desk_inactive_node)
-        return desk_inactive_node.data
+        desk_inactive: Desk = self.inactive_desks.pop().data
+        self.active_desks.push(desk_inactive)
+        return desk_inactive
 
-    
     def inactive_desk_by_algorithm(self) -> Desk:
-        desk_active_node: NodeForSinglyList = self.active_desks.pop().data
-        self.inactive_desks.push(desk_active_node)
-        return desk_active_node.data
-
+        desk_active: Desk = self.active_desks.pop().data
+        self.inactive_desks.push(desk_active)
+        return desk_active
 
     def add_inactive_desk(self, desk: Desk) -> None:
         self.inactive_desks.push(desk)
@@ -71,8 +86,8 @@ class Office:
             count += 1
             node = node.next
 
-
     # Getters and setters
+
     def get_active_desks(self) -> Stack:
         return self.active_desks
 
@@ -99,3 +114,7 @@ class Office:
 
     def get_head_inactive_desks(self) -> NodeForSinglyList:
         return self.inactive_desks.stack.head
+
+
+    def clients_in_queue(self) -> int:
+        return self.clients.get_size()

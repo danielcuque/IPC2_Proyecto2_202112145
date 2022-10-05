@@ -7,7 +7,8 @@ from controller.classes.Office import Office
 
 # Controllers
 from controller.store.StoreData import StoreData
-from model.utils.ShowProperties import show_desk, show_desks, show_office_state
+from model.simulation.Simulation import Simulation
+from model.utils.ShowProperties import show_desk, show_desks
 
 
 class Menu3:
@@ -18,7 +19,7 @@ class Menu3:
                 options_main_menu = [
                     inquirer.List('menu',
                                   message="Seleccione una opción",
-                                  choices=["1. Ver el estado del punto de antención",
+                                  choices=["1. Continuar/reanudar simulación de atención",
                                            "2. Activar escritorio de servicio",
                                            "3. Desactivar escritorio de servicio",
                                            "4. Atender cliente",
@@ -27,7 +28,7 @@ class Menu3:
                                            "7. Regresar"])]
                 answer = inquirer.prompt(questions=options_main_menu)
                 if answer is not None:
-                    if answer['menu'] == "1. Ver el estado del punto de antención":
+                    if answer['menu'] == "1. Continuar/reanudar simulación de atención":
                         self._show_office_state()
                     elif answer['menu'] == "2. Activar escritorio de servicio":
                         self._activate_desk()
@@ -45,20 +46,27 @@ class Menu3:
                         print("No existe esta opción")
 
     def _show_office_state(self) -> None:
-        show_office_state(StoreData.selected_office) if StoreData.selected_office is not None else print(
-            "No hay un punto de atención seleccionado")
+        if StoreData.selected_office is not None and StoreData.selected_company is not None:
+            simulation = Simulation()
+            simulation.execute_simulation()
+        else:
+            print("No hay un punto de atención seleccionado")
 
     def _activate_desk(self) -> None:
-        Console().print("Escritorio activado", style="bold green")
-        show_desks(StoreData.selected_office.active_desks, True)
-        show_desks(StoreData.selected_office.inactive_desks, False)
-        show_desk(StoreData.selected_office.active_desk_by_algorithm())
+        if StoreData.selected_office.inactive_desks.get_size() > 0:
+            Console().print("Escritorio activado", style="bold green")
+            show_desks(StoreData.selected_office.active_desks, True)
+            show_desk(StoreData.selected_office.active_desk_by_algorithm())
+        else:
+            Console().print("No hay escritorios disponibles", style="bold red")
 
     def _inactivate_desk(self) -> None:
-        Console().print("Escritorio desactivado", style="bold green")
-        show_desks(StoreData.selected_office.active_desks, True)
-        show_desks(StoreData.selected_office.inactive_desks, False)
-        show_desk(StoreData.selected_office.inactive_desk_by_algorithm())
+        if StoreData.selected_office.active_desks.get_size() > 0:
+            Console().print("Escritorio desactivado", style="bold green")
+            show_desks(StoreData.selected_office.inactive_desks, False)
+            show_desk(StoreData.selected_office.inactive_desk_by_algorithm())
+        else:
+            Console().print("No hay escritorios disponibles", style="bold red")
 
     def _attend_client(self) -> None:
         pass

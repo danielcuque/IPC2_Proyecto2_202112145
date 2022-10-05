@@ -26,11 +26,10 @@ class InitConfig:
             initial_config: Element = init_info.getElementsByTagName(
                 "configInicial")
 
-            if len(initial_config) > 0:
-                initial_config: Element = initial_config[0]
-                # id_config: str = initial_config.getAttribute("id")
-                id_company: str = initial_config.getAttribute("idEmpresa")
-                id_office: str = initial_config.getAttribute("idPunto")
+            for config in initial_config:
+                config: Element
+                id_company: str = config.getAttribute("idEmpresa")
+                id_office: str = config.getAttribute("idPunto")
 
                 search_company = StoreData.search_company_by_id(id_company)
                 if search_company is not None:
@@ -38,10 +37,10 @@ class InitConfig:
                         id_office)
                     if search_office is not None:
                         # Active desks
-                        self.get_active_desks(initial_config, search_office)
+                        self.get_active_desks(config, search_office)
 
                         # Clients
-                        self.get_clients(initial_config, search_office)
+                        self.get_clients(config, search_office)
                         show_clients(search_office.clients)
                     else:
                         self.console.print(

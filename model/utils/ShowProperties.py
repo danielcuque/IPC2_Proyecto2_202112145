@@ -55,6 +55,34 @@ def show_company(company: Company) -> None:
     console.print(table)
 
 
+def show_client(client: Client) -> None:
+    console = Console()
+    table = Table(show_header=True, header_style="bold blue",
+                  title="Cliente")
+    table.add_column("ID")
+    table.add_column("Nombre")
+    table.add_row(client.dpi, client.name)
+    console.print(table)
+
+
+def show_client_transactions(client: Client) -> None:
+    console = Console()
+    if client.transactions.is_empty():
+        console.print("No hay transacciones registradas", style="bold red")
+    else:
+        table = Table(show_header=True, header_style="bold blue",
+                      title=f"Transacciones 📑 de { client.name }")
+        table.add_column("ID")
+        table.add_column("Tiempo de atención")
+        node = client.transactions.head
+        while node is not None:
+            transaction: TransactionClient = node.data
+            table.add_row(transaction.get_id_transaction(),
+                          transaction.get_quantity())
+            node = node.next
+        console.print(table)
+
+
 def show_clients(clients: Queue) -> None:
     console = Console()
     if clients.is_empty():
@@ -110,7 +138,6 @@ def show_desks(list_of_desks: Stack, is_active: bool = False) -> None:
         table.add_column("Identificación")
         table.add_column("Encargado")
         node: NodeForSinglyList = list_of_desks.stack.head
-        print(node.data)
         while node is not None:
             desk: Desk = node.data
             table.add_row(desk.id_desk, desk.correlative, desk.employee)
@@ -142,56 +169,3 @@ def show_transaction(transaction: TransactionCompany) -> None:
     table.add_row(transaction.id_transaction,
                   transaction.name, transaction.time)
     console.print(table)
-
-
-def show_office_state(office: Office) -> None:
-    console = Console()
-
-    table = Table(show_header=True, header_style="bold blue",
-                  title="Estado del punto de atención seleccionado")
-    table.add_column("Escritorios activos")
-    table.add_column("Escritorios inactivos")
-    table.add_column("Clientes en cola")
-    table.add_column("Tiempo promedio de espera")
-    table.add_column("Tiempo máximo de espera")
-    table.add_column("Tiempo mínimo de espera")
-    table.add_column("Tiempo promedio de atención")
-    table.add_column("Tiempo máximo de atención")
-    table.add_column("Tiempo mínimo de atención")
-
-    table.add_row(
-        f'{office.active_desks.get_size()}',
-        f'{office.inactive_desks.get_size()}',
-        f'{office.clients.get_size()}',
-        "1",
-        "1",
-        "1",
-        "1",
-        "1",
-        "1",
-        # office.average_waiting_time,
-        # office.max_waiting_time,
-        # office.min_waiting_time,
-        # office.average_attendance_time,
-        # office.max_attendance_time,
-        # office.min_attendance_time
-    )
-    console.print(table)
-
-
-def show_client_transactions(client: Client) -> None:
-    console = Console()
-    if client.transactions.is_empty():
-        console.print("No hay transacciones registradas", style="bold red")
-    else:
-        table = Table(show_header=True, header_style="bold blue",
-                      title=f"Transacciones 📑 de { client.name }")
-        table.add_column("ID")
-        table.add_column("Tiempo de atención")
-        node = client.transactions.head
-        while node is not None:
-            transaction: TransactionClient = node.data
-            table.add_row(transaction.get_id_transaction(),
-                          transaction.get_quantity())
-            node = node.next
-        console.print(table)

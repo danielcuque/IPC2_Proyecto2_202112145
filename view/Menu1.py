@@ -59,7 +59,7 @@ class Menu1:
     def _system_config(self) -> None:
         path_file = get_file()
         if path_file:
-            self.system_config.system_config(path_file)
+            self.system_config.system_config("ConfigSys.xml")
         else:
             print("No existe el fichero")
 
@@ -267,7 +267,7 @@ class Menu1:
         else:
             path_file: str = get_file()
             if path_file is not None:
-                self.init_config.init_config(path_file)
+                self.init_config.init_config("ConfigInit.xml")
                 self.console.print(
                     "Configuración inicializada", style="bold green")
             else:
