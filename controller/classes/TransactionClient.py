@@ -1,5 +1,5 @@
 class TransactionClient:
-    def __init__(self, id_transaction: str, quantity):
+    def __init__(self, id_transaction: str, quantity: str):
         self.id_transaction: str = id_transaction
         self.quantity: int = quantity
 
@@ -8,3 +8,5 @@ class TransactionClient:
 
     def get_quantity(self):
         return self.quantity
+
+    

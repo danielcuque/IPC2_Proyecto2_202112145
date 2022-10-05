@@ -28,6 +28,9 @@ class Office:
     clients_in_queue: int = 0
     clients_out_queue: int = 0
 
+    # Set desactive desk
+    is_active_desk: bool = False
+
     def __str__(self):
         return f"ID: {self.id_office}, Nombre: {self.name}, Dirección: {self.address}"
 
@@ -51,11 +54,13 @@ class Office:
 
     def active_desk_by_algorithm(self) -> Desk:
         desk_inactive: Desk = self.inactive_desks.pop().data
+        desk_inactive.set_as_active()
         self.active_desks.push(desk_inactive)
         return desk_inactive
 
     def inactive_desk_by_algorithm(self) -> Desk:
         desk_active: Desk = self.active_desks.pop().data
+        desk_active.set_as_inactive()
         self.inactive_desks.push(desk_active)
         return desk_active
 
@@ -115,6 +120,5 @@ class Office:
     def get_head_inactive_desks(self) -> NodeForSinglyList:
         return self.inactive_desks.stack.head
 
-
-    def clients_in_queue(self) -> int:
+    def get_clients_in_queue(self) -> int:
         return self.clients.get_size()

@@ -159,7 +159,7 @@ def show_desk(desk: Desk) -> None:
     console.print(table)
 
 
-def show_transaction(transaction: TransactionCompany) -> None:
+def show_transaction_company(transaction: TransactionCompany) -> None:
     console = Console()
     table = Table(show_header=True, header_style="bold blue",
                   title="Transacción 📑")
@@ -168,4 +168,15 @@ def show_transaction(transaction: TransactionCompany) -> None:
     table.add_column("Tiempo de atención")
     table.add_row(transaction.id_transaction,
                   transaction.name, transaction.time)
+    console.print(table)
+
+
+def show_transaction_client(transaction: TransactionClient) -> None:
+    console = Console()
+    table = Table(show_header=True, header_style="bold blue",
+                  title="Transacción 📑")
+    table.add_column("ID")
+    table.add_column("Nombre")
+    table.add_column("Tiempo de atención")
+    table.add_row(transaction.id_transaction, transaction.quantity)
     console.print(table)

@@ -7,11 +7,12 @@ from controller.classes.Company import Company
 from controller.classes.Desk import Desk
 from controller.classes.Office import Office
 from controller.classes.TransactionClient import TransactionClient
+from controller.classes.TransactionCompany import TransactionCompany
 
 from controller.store.StoreData import StoreData
 from model.simulation.SystemConfig import SystemConfig
 
-from model.utils.ShowProperties import show_client_transactions, show_clients, show_company, show_desk, show_desks, show_office, show_companies, show_company_by_id
+from model.utils.ShowProperties import show_client_transactions, show_clients, show_company, show_desk, show_desks, show_office, show_companies, show_company_by_id, show_transaction_company
 
 
 class InitConfig:
@@ -40,7 +41,7 @@ class InitConfig:
                         self.get_active_desks(config, search_office)
 
                         # Clients
-                        self.get_clients(config, search_office)
+                        self.get_clients(config, search_office, search_company)
                         show_clients(search_office.clients)
                     else:
                         self.console.print(
@@ -92,7 +93,7 @@ class InitConfig:
                     f'No se encontró el escritorio {id_active_desk}', style="bold red")
         show_desks(office.active_desks, True)
 
-    def get_clients(self, config_element: Element, office: Office) -> None:
+    def get_clients(self, config_element: Element, office: Office, company: Company) -> None:
         # Get the list of clients
         list_of_clients: Element = config_element.getElementsByTagName(
             "cliente")
@@ -117,8 +118,8 @@ class InitConfig:
             if len(list_of_transactions) > 0:
                 list_of_transactions: Element = list_of_transactions[0]
                 self.get_transactions_for_clients(
-                    list_of_transactions, new_client)
-                    
+                    list_of_transactions, new_client, company)
+
             else:
                 self.console.print("No hay transacciones", style="bold orange")
 
@@ -127,7 +128,7 @@ class InitConfig:
             # Add the client to the list of clients of the office
             office.add_client(new_client)
 
-    def get_transactions_for_clients(self, list_of_transactions_element: Element, client: Client):
+    def get_transactions_for_clients(self, list_of_transactions_element: Element, client: Client, company: Company) -> None:
         list_of_transactions: Element = list_of_transactions_element.getElementsByTagName(
             "transaccion")
 
@@ -137,6 +138,13 @@ class InitConfig:
             id_transaction: str = transaction.getAttribute("idTransaccion")
             quantity: str = transaction.getAttribute("cantidad")
 
-            new_transaction: TransactionClient = self.create_transaction(
-                id_transaction, quantity)
-            client.add_transaction_for_client(new_transaction)
+            transaction_company: TransactionCompany = company.search_transaction_by_id(
+                id_transaction)
+
+            if transaction_company is not None:
+                new_transaction: TransactionClient = self.create_transaction(
+                    id_transaction, quantity)
+                client.add_transaction_for_client(new_transaction)
+            else:
+                self.console.print(
+                    f'No se encontró la transacción {id_transaction}', style="bold red")

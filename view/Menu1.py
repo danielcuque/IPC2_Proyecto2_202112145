@@ -12,7 +12,7 @@ from model.simulation.SystemConfig import SystemConfig
 
 # Utils
 from model.utils.Utils import get_file, ask_yes_no
-from model.utils.ShowProperties import show_companies, show_company_by_id, show_company, show_offices, show_office, show_desks, show_desk, show_transaction
+from model.utils.ShowProperties import show_companies, show_company_by_id, show_company, show_offices, show_office, show_desks, show_desk, show_transaction_company
 
 
 class Menu1:
@@ -249,7 +249,7 @@ class Menu1:
                 if new_transaction is not None:
                     self.console.print(
                         "Transacción creada", style="bold green")
-                    show_transaction(new_transaction)
+                    show_transaction_company(new_transaction)
                     company.add_transaction(new_transaction)
                     self.console.print(
                         "Transacción agregada a la empresa", style="bold green")
