@@ -36,10 +36,6 @@ class Main:
                 else:
                     print("No existe esta opción")
 
-    # Menu 3
-    def _point_menu(self) -> None:
-        pass
-
     # Menu 4
     @staticmethod
     def _exit():

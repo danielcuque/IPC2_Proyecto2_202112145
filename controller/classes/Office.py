@@ -32,6 +32,18 @@ class Office:
     def add_active_desk(self, desk: Desk) -> None:
         self.active_desks.push(desk)
 
+    def active_desk_by_algorithm(self) -> Desk:
+        desk_inactive_node: NodeForSinglyList = self.inactive_desks.pop()
+        self.active_desks.push(desk_inactive_node)
+        return desk_inactive_node.data
+
+    
+    def inactive_desk_by_algorithm(self) -> Desk:
+        desk_active_node: NodeForSinglyList = self.active_desks.pop().data
+        self.inactive_desks.push(desk_active_node)
+        return desk_active_node.data
+
+
     def add_inactive_desk(self, desk: Desk) -> None:
         self.inactive_desks.push(desk)
 
