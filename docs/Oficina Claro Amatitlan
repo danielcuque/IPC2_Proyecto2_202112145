@@ -1,0 +1,30 @@
+digraph "Oficina Claro Amatitlan" {
+	subgraph cluster_stats {
+		color=lightgrey fontsize=14 label="Estadísticas" style=filled
+		rankdir=LR
+		stats [label="Clientes atendidos: 5"]
+	}
+	node [color="#FFEDBB" shape=box style=filled]
+	subgraph cluster_desks {
+		color=lightgrey fontsize=14 label="Escritorios activos" style=filled
+		rankdir=LR
+		D_0 [label="El bicho siuuu - Escritorio 1"]
+		D_1 -> D_0
+		D_1 [label="Ana de Armas :3 - Escritorio 2"]
+		D_2 -> D_1
+		D_2 [label="Henry Cavil - Escritorio 3"]
+	}
+	node [color="#FFEDBB" shape=box style=filled]
+	subgraph cluster_clients {
+		color=lightgrey fontsize=14 label="Fila de espera" style=filled
+		C_0 [label="29331511655555 -  Henry Ford "]
+		C_1 -> C_0 [constraint=false]
+		C_1 [label="2933151164444 -  Freddie Mercuri "]
+		C_2 -> C_1 [constraint=false]
+		C_2 [label="2933151163333 -  Dante "]
+		C_3 -> C_2 [constraint=false]
+		C_3 [label="2933151162222 -  Bill Gates "]
+		C_4 -> C_3 [constraint=false]
+		C_4 [label="2933151161111 -  Arturito "]
+	}
+}

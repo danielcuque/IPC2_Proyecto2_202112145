@@ -1,18 +1,21 @@
 import inquirer
 from rich.console import Console
+from controller.base.SinglyLinkedList import SinglyLinkedList
 
 # Classes
 from controller.classes.Client import Client
 from controller.classes.Desk import Desk
+from controller.classes.TransactionClient import TransactionClient
 
 
 from controller.store.StoreData import StoreData
+from model.utils.ShowProperties import show_transaction_client
 
 
 class Simulation:
 
     def execute_simulation(self):
-        while self.simulate_attention():
+        while self.verify_data():
             self.show_principal_info()
             question = [
                 inquirer.List('menu',
@@ -22,7 +25,8 @@ class Simulation:
             answer = inquirer.prompt(questions=question)
             if answer is not None:
                 if answer['menu'] == "Continuar":
-                    pass
+                    self.assign_client_to_desk()
+                    self.reduce_time_in_desk()
                 elif answer['menu'] == "Pausar":
                     break
                 else:
@@ -30,24 +34,15 @@ class Simulation:
 
         Console().print("Simulación finalizada", style="bold green")
 
-    def simulate_attention(self) -> bool:
-        if StoreData.selected_office is not None and StoreData.selected_company is not None:
-            if StoreData.selected_office.active_desks.get_size() > 0 and StoreData.selected_office.clients_in_queue > 0:
-                self.assign_client_to_desk()
-                return True
-            else:
-                Console().print("No hay escritorios activos", style="bold red")
-                return False
-
     def show_principal_info(self):
-
         selected_company = StoreData.selected_company
         selected_office = StoreData.selected_office
 
         Console().print("Simulación de atención", style="bold green")
-        Console().print(f'Empresa: {selected_company.name}', style="bold green")
-        Console().print(f'Punto de atención: {selected_office.name}', style="bold green")
-
+        Console().print(
+            f'Empresa: {selected_company.name}', style="bold green")
+        Console().print(
+            f'Punto de atención: {selected_office.name}', style="bold green")
 
         # Show the value of clients in queue and out of queue
         Console().print(
@@ -61,13 +56,11 @@ class Simulation:
         Console().print(
             f'Escritorios inactivos: {selected_office.inactive_desks.get_size()}', style="bold yellow")
 
-
         # Show average time for attention
         Console().print(f'\nTiempo promedio de espera: 0', style="bold yellow")
         Console().print(f'Tiempo máximo de espera: 0', style="bold yellow")
         Console().print(f'Tiempo mínimo de espera: 0', style="bold yellow")
 
-    
     def assign_client_to_desk(self) -> None:
         list_of_desks = StoreData.selected_office.active_desks
 
@@ -79,22 +72,97 @@ class Simulation:
                 if client_node is not None:
                     client: Client = client_node.data
                     desk.attend_client(client)
-                    Console().print(f'Cliente {client.name} asignado a escritorio {desk.employee}', style="bold yellow")
-                    return
+                    Console().print(
+                        f'Cliente {client.name} asignado a escritorio {desk.employee}', style="bold yellow")
                 else:
                     Console().print("No hay clientes en cola", style="bold red")
-                    return
             node = node.next
-        
-        Console().print("No hay escritorios disponibles", style="bold red")
 
-        
-    # Todo
+    def reduce_time_in_desk(self) -> None:
+        list_of_desks = StoreData.selected_office.active_desks
+
+        node = list_of_desks.stack.head
+        while node is not None:
+            desk: Desk = node.data
+            if desk.get_client_in_attention() is not None:
+                self.show_desks_with_clients(desk)
+                if self.next_step(desk.get_client_in_attention()):
+                    desk.attend_client(None)
+            node = node.next
+
+    def next_step(self, client: Client):
+        list_of_transactions: SinglyLinkedList = client.transactions
+
+        node = list_of_transactions.head
+        if node is not None:
+            transaction: TransactionClient = node.data
+            if transaction.get_simulation_time() > 0:
+                show_transaction_client(client, transaction)
+                transaction.go_to_next_step_in_time()
+                return
+            else:
+                client.get_transactions().remove_at_start()
+                return self.next_step(client)
+        return True
+
+    def show_desks_with_clients(self, desk: Desk):
+        Console().print(f'Atendiendo: {desk.employee}\n'
+        f'Cliente: {desk.get_client_in_attention().name}\n'
+        f'Transacción: {desk.get_client_in_attention().get_first_transaction_name()}', style="bold orange1")
+
+        Console().print(f'Tiempo promedio de atención:\n'
+            f'Tiempo máximo de atención:\n'
+            f'Tiempo mínimo de atención:\n', style="bold orange1")
+
+    def verify_data(self) -> bool:
+        if StoreData.selected_company is not None and StoreData.selected_office is not None:
+            if (StoreData.selected_office.active_desks.get_size() > 0 and self.verify_if_desk_is_attending()) or StoreData.selected_office.clients_in_queue > 0:
+                return True
+            else:
+                Console().print(
+                    "No hay escritorios activos o clientes en cola", style="bold red")
+                return False
+        else:
+            Console().print("No hay empresa o punto de atención seleccionado", style="bold red")
+            return False
+
+    @staticmethod
+    def verify_if_desk_is_attending() -> bool:
+        list_of_active_desks = StoreData.selected_office.active_desks
+
+        node = list_of_active_desks.stack.head
+        while node is not None:
+            desk: Desk = node.data
+            if desk.get_client_in_attention() is not None:
+                return True
+            node = node.next
+        return False
+
+    def simulate_all(self):
+        while self.verify_data():
+            self.assign_client_to_desk()
+            self.reduce_time_in_desk()
+
+        Console().print("Simulación finalizada", style="bold green")
+    # Todo para simulacion
     '''
     [ x ]Verificar si hay clientes en la cola
     [ x ]Si hay clientes en la cola, atender al primero
     [ x ]Si no hay clientes en la cola, mostrar mensaje
     [ x ]Si no hay escritorios activos, mostrar mensaje y no asignar cliente
-    [  ]Si el escritorio activo, termina con su cliente, se le asigna uno nuevo
-    [  ]Cuando termine de atender al cliente, el estado es None
+    [ x ]Si el escritorio activo, termina con su cliente, se le asigna uno nuevo
+    [ x ]Cuando termine de atender al cliente, el estado es None
     '''
+
+
+    # Todo para tiempos
+    '''
+    [ x ]Eliminar transaccion de la lista de transacciones del cliente si el tiempo es 0
+    [  ]Mostrar tiempo de atención
+    [  ]Mostrar tiempo promedio de atención
+    [  ]Mostrar tiempo máximo de atención
+    [  ]Mostrar tiempo mínimo de atención
+
+    Cuando se ingrese un cliente 
+    '''
+    

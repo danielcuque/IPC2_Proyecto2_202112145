@@ -12,17 +12,18 @@ class Office:
         self.address: str = address.strip()
         self.active_desks: Stack = Stack()
         self.inactive_desks: Stack = Stack()
-        self.clients: Queue = Queue()
+        self.clients_pending: Queue = Queue()
+        self.clients_attended: Queue = Queue()
 
     # Attention times
-    max_time_attention: int = 0
-    min_time_attention: int = 0
-    average_time_attention: int = 0
+    max_time_attention_in_office: int = 0
+    min_time_attention_in_office: int = 0
+    average_time_attention_in_office: int = 0
 
     # Waiting times
-    max_time_waiting: int = 0
-    min_time_waiting: int = 0
-    average_time_waiting: int = 0
+    max_time_waiting_in_office: int = 0
+    min_time_waiting_in_office: int = 0
+    average_time_waiting_in_office: int = 0
 
     # Clients in queue/ out queue
     clients_in_queue: int = 0
@@ -41,12 +42,16 @@ class Office:
 
     def add_client(self, client: str) -> NodeForSinglyList:
         self.clients_in_queue += 1
-        return self.clients.enqueue(client)
+        return self.clients_pending.enqueue(client)
 
     def remove_client(self) -> NodeForSinglyList or None:
-        self.clients_out_queue += 1
-        self.clients_in_queue -= 1
-        return self.clients.dequeue()
+        client_dequeue = self.clients_pending.dequeue()
+        if client_dequeue is not None:
+            self.clients_out_queue += 1
+            self.clients_in_queue -= 1
+            
+            self.clients_attended.enqueue(client_dequeue.data)
+        return client_dequeue
 
     # Add active/inactive desk
     def add_active_desk(self, desk: Desk) -> None:
@@ -106,13 +111,13 @@ class Office:
         self.inactive_desks = inactive_desk
 
     def set_clients(self, clients: Queue) -> None:
-        self.clients = clients
+        self.clients_pending = clients
 
     def get_clients(self) -> Queue:
-        return self.clients
+        return self.clients_pending
 
     def get_head_clients(self) -> NodeForSinglyList:
-        return self.clients.items.head
+        return self.clients_pending.items.head
 
     def get_head_active_desks(self) -> NodeForSinglyList:
         return self.active_desks.stack.head
@@ -121,4 +126,4 @@ class Office:
         return self.inactive_desks.stack.head
 
     def get_clients_in_queue(self) -> int:
-        return self.clients.get_size()
+        return self.clients_pending.get_size()

@@ -42,7 +42,7 @@ class InitConfig:
 
                         # Clients
                         self.get_clients(config, search_office, search_company)
-                        show_clients(search_office.clients)
+                        show_clients(search_office.clients_pending)
                     else:
                         self.console.print(
                             "No se encontro el punto de venta", style="bold red")
@@ -56,9 +56,9 @@ class InitConfig:
         new_client: Client = Client(dpi, name)
         return new_client
 
-    def create_transaction(self, id_transaction: str, quantity: str) -> TransactionClient:
+    def create_transaction(self, transaction_company: TransactionCompany, quantity: str) -> TransactionClient:
         new_transaction: TransactionClient = TransactionClient(
-            id_transaction, quantity)
+            transaction_company, quantity)
         return new_transaction
 
     def get_active_desks(self, config_element: Element, office: Office) -> None:
@@ -143,7 +143,7 @@ class InitConfig:
 
             if transaction_company is not None:
                 new_transaction: TransactionClient = self.create_transaction(
-                    id_transaction, quantity)
+                    transaction_company, quantity)
                 client.add_transaction_for_client(new_transaction)
             else:
                 self.console.print(

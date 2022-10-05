@@ -77,7 +77,7 @@ def show_client_transactions(client: Client) -> None:
         node = client.transactions.head
         while node is not None:
             transaction: TransactionClient = node.data
-            table.add_row(transaction.get_id_transaction(),
+            table.add_row(transaction.transaction_company.id_transaction,
                           transaction.get_quantity())
             node = node.next
         console.print(table)
@@ -171,12 +171,14 @@ def show_transaction_company(transaction: TransactionCompany) -> None:
     console.print(table)
 
 
-def show_transaction_client(transaction: TransactionClient) -> None:
+def show_transaction_client(client, transaction: TransactionClient) -> None:
     console = Console()
+    transaction_company: TransactionCompany = transaction.transaction_company
+    console.print(f'Transaccion de {client.name} 📑')
     table = Table(show_header=True, header_style="bold blue",
                   title="Transacción 📑")
     table.add_column("ID")
     table.add_column("Nombre")
-    table.add_column("Tiempo de atención")
-    table.add_row(transaction.id_transaction, transaction.quantity)
+    table.add_column("Tiempo pendiente")
+    table.add_row(transaction_company.id_transaction, transaction_company.name, str(transaction.simuation_time))
     console.print(table)

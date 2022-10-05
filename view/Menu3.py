@@ -7,6 +7,7 @@ from controller.classes.Office import Office
 
 # Controllers
 from controller.store.StoreData import StoreData
+from model.docs.GenerateGraphvizDoc import GenerateGraphvizDoc
 from model.simulation.Simulation import Simulation
 from model.utils.ShowProperties import show_desk, show_desks
 
@@ -72,10 +73,14 @@ class Menu3:
         pass
 
     def _request_attend(self) -> None:
-        pass
+        while True:
+            questions = []
+            break
 
     def _simulate_activity(self) -> None:
-        pass
+        Simulation().simulate_all()
+        doc = GenerateGraphvizDoc()
+        doc.generate_doc()
 
     def verify_if_data_exists(self) -> bool:
 
