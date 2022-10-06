@@ -1,5 +1,5 @@
 
-class NodeForSimplyList:
+class NodeForSinglyList:
     def __init__(self, data):
         self.data = data
         self.next = None
@@ -9,6 +9,6 @@ class NodeForSimplyList:
 
     def get_next(self):
         return self.next
-    
+
     def set_next(self, next):
         self.next = next

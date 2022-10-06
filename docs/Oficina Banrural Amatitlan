@@ -1,0 +1,21 @@
+digraph "Oficina Banrural Amatitlan" {
+	subgraph cluster_stats {
+		color=lightgrey fontsize=14 label="Estadísticas" style=filled
+		node [color="#FFEDBB" shape=box style=filled]
+		stats [label="
+                Compañia: Banrural Amatitlan
+                Clientes atendidos: 0
+                Escritorios activos: 0
+                Escritorios inactivos: 4
+
+
+                Tiempo promedio de atención: 0 minutos
+                Tiempo máximo de atención: 0 minutos
+                Tiempo mínimo de atención: 0 minutos
+
+                Tiempo promedio de espera: 0 minutos
+                Tiempo máximo de espera: 0 minutos
+                Tiempo mínimo de espera: 0 minutos
+                "]
+	}
+}
