@@ -34,7 +34,8 @@ class GenerateGraphvizDoc:
                     client: Client = node.data
                     c.node(f'C_{i}', f'{client.dpi} - {client.name}')
                     if node.next is not None:
-                        c.edge(f'C_{i+1}', f'C_{i}', constraint='false', dir="back")
+                        c.edge(f'C_{i+1}', f'C_{i}',
+                               constraint='false', dir="back")
                     node = node.next
         else:
             Console().print('No hay clientes atendidos', style='bold red')
@@ -63,7 +64,21 @@ class GenerateGraphvizDoc:
                    label=f'Estadísticas', fontsize='14')
             c.attr('node', shape='box', style='filled', color='#FFEDBB')
             c.node(
-                'stats', f'Clientes atendidos: {StoreData.selected_office.clients_attended.items.get_size()}\n Compañia: {StoreData.selected_company.name}\n Punto de atención: {StoreData.selected_office.name}\n Escritorios activos: {StoreData.selected_office.active_desks.get_size()}\n Escritorios inactivos: {StoreData.selected_office.inactive_desks.get_size()}')
+                'stats', f'''
+                Compañia: {StoreData.selected_office.name}
+                Clientes atendidos: {StoreData.selected_office.clients_attended.items.get_size()}
+                Escritorios activos: {StoreData.selected_office.active_desks.get_size()}
+                Escritorios inactivos: {StoreData.selected_office.inactive_desks.get_size()}
+
+
+                Tiempo promedio de atención: {StoreData.selected_office.average_time_attention_in_office} minutos
+                Tiempo máximo de atención: {StoreData.selected_office.max_time_waiting_in_office} minutos
+                Tiempo mínimo de atención: {StoreData.selected_office.min_time_waiting_in_office} minutos
+
+                Tiempo promedio de espera: {StoreData.selected_office.average_time_waiting_in_office} minutos
+                Tiempo máximo de espera: {StoreData.selected_office.max_time_waiting_in_office} minutos
+                Tiempo mínimo de espera: {StoreData.selected_office.min_time_waiting_in_office} minutos
+                ''')
 
             node = StoreData.selected_office.get_head_active_desks()
             for i in range(StoreData.selected_office.active_desks.get_size()):

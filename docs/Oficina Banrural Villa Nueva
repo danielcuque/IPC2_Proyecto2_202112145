@@ -2,11 +2,21 @@ digraph "Oficina Banrural Villa Nueva" {
 	subgraph cluster_stats {
 		color=lightgrey fontsize=14 label="Estadísticas" style=filled
 		node [color="#FFEDBB" shape=box style=filled]
-		stats [label="Clientes atendidos: 5
- Compañia: Banco de Desarrollo Rural
- Punto de atención: Banrural Villa Nueva
- Escritorios activos: 2
- Escritorios inactivos: 0"]
+		stats [label="
+                Compañia: Banrural Villa Nueva
+                Clientes atendidos: 5
+                Escritorios activos: 2
+                Escritorios inactivos: 0
+
+
+                Tiempo promedio de atención: 0 minutos
+                Tiempo máximo de atención: 0 minutos
+                Tiempo mínimo de atención: 0 minutos
+
+                Tiempo promedio de espera: 0 minutos
+                Tiempo máximo de espera: 0 minutos
+                Tiempo mínimo de espera: 0 minutos
+                "]
 		D_0stats [label="Atendió: Isaac Newton Escritorio: A022 Clientes atendidos: 2
  Tiempo promedio: 20.0 minutos 
  Tiempo máxmimo: 30.0 minutos 

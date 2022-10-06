@@ -12,7 +12,7 @@ from model.simulation.SystemConfig import SystemConfig
 
 # Utils
 from model.utils.Utils import get_file, ask_yes_no
-from model.utils.ShowProperties import show_companies, show_company_by_id, show_company, show_offices, show_office, show_desks, show_desk, show_transaction_company
+from model.utils.ShowProperties import show_company, show_office, show_desk, show_transaction_company
 
 
 class Menu1:
@@ -59,7 +59,7 @@ class Menu1:
     def _system_config(self) -> None:
         path_file = get_file()
         if path_file:
-            self.system_config.system_config("ConfigSys.xml")
+            self.system_config.system_config(path_file)
         else:
             print("No existe el fichero")
 
@@ -267,7 +267,7 @@ class Menu1:
         else:
             path_file: str = get_file()
             if path_file is not None:
-                self.init_config.init_config("ConfigInit.xml")
+                self.init_config.init_config(path_file)
                 self.console.print(
                     "Configuración inicializada", style="bold green")
             else:
