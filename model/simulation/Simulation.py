@@ -25,8 +25,7 @@ class Simulation:
             answer = inquirer.prompt(questions=question)
             if answer is not None:
                 if answer['menu'] == "Continuar":
-                    self.assign_client_to_desk()
-                    self.reduce_time_in_desk()
+                    self.execute_all_methods()
                 elif answer['menu'] == "Pausar":
                     break
                 else:
@@ -144,8 +143,7 @@ class Simulation:
 
     def simulate_all(self):
         while self.verify_data():
-            self.assign_client_to_desk()
-            self.reduce_time_in_desk()
+            self.execute_all_methods()
 
         Console().print("Simulación finalizada", style="bold green")
     # Todo para simulacion

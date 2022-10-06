@@ -72,6 +72,38 @@ class Office:
     def add_inactive_desk(self, desk: Desk) -> None:
         self.inactive_desks.push(desk)
 
+    def calculate_times_variables(self) -> None:
+        self.calculate_average_atention()
+        self.calculate_min_max_atention()
+        self.calculate_average_waiting()
+        self.calculate_min_max_waiting()
+
+    def calculate_average_atention(self) -> None:
+        if self.clients_out_queue == 0:
+            return
+
+        node: NodeForSinglyList = self.active_desks.stack.head
+        sum_of_times: int = 0
+        count: int = 0
+
+        for i in range(self.active_desks.get_size()):
+            desk: Desk = node.data
+            sum_of_times += desk.accumulated_time
+            count += 1
+            node = node.next
+
+        self.average_time_attention_in_office = sum_of_times / count
+
+    def calculate_min_max_atention(self):
+        if self.clients_out_queue == 0:
+            return
+
+    def calculate_average_waiting(self):
+        pass
+
+    def calculate_min_max_waiting(self):
+        pass
+
     def search_desk_by_id(self, id_desk: str, is_active: bool = False) -> Desk:
         list_of_desks: Stack = self.active_desks if is_active else self.inactive_desks
 
