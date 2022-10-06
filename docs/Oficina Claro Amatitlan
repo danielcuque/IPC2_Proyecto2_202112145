@@ -2,49 +2,61 @@ digraph "Oficina Claro Amatitlan" {
 	subgraph cluster_stats {
 		color=lightgrey fontsize=14 label="Estadísticas" style=filled
 		node [color="#FFEDBB" shape=box style=filled]
-		rankdir=LR
-		stats [label="Clientes atendidos: 5
- Compañia: Claro
- Punto de atención: Claro Amatitlan
- Escritorios activos: 3
- Escritorios inactivos: 1"]
-		D_0stats [label="Clientes atendidos: 2
- Tiempo promedio: 15.0 minutos 
+		stats [label="
+                Compañia: Claro Amatitlan
+                Clientes atendidos: 5
+                Escritorios activos: 4
+                Escritorios inactivos: 0
+
+
+                Tiempo promedio de atención: 0 minutos
+                Tiempo máximo de atención: 0 minutos
+                Tiempo mínimo de atención: 0 minutos
+
+                Tiempo promedio de espera: 0 minutos
+                Tiempo máximo de espera: 0 minutos
+                Tiempo mínimo de espera: 0 minutos
+                "]
+		D_0stats [label="Atendió: Nicola Tesla Escritorio: I777 Clientes atendidos: 1
+ Tiempo promedio: 40.0 minutos 
+ Tiempo máxmimo: 40.0 minutos 
+ Tiempo mínimo: 40.0 minutos"]
+		D_1stats [label="Atendió: El bicho siuuu Escritorio: L444 Clientes atendidos: 1
+ Tiempo promedio: 10.0 minutos 
  Tiempo máxmimo: 10.0 minutos 
  Tiempo mínimo: 10.0 minutos"]
-		D_0stats -> stats
-		D_1stats [label="Clientes atendidos: 2
- Tiempo promedio: 44.0 minutos 
- Tiempo máxmimo: 40.0 minutos 
+		D_2stats [label="Atendió: Ana de Armas :3 Escritorio: K555 Clientes atendidos: 2
+ Tiempo promedio: 9.0 minutos 
+ Tiempo máxmimo: 10.0 minutos 
  Tiempo mínimo: 8.0 minutos"]
-		D_1stats -> stats
-		D_2stats [label="Clientes atendidos: 1
+		D_3stats [label="Atendió: Henry Cavil Escritorio: J666 Clientes atendidos: 1
  Tiempo promedio: 15.0 minutos 
  Tiempo máxmimo: 15.0 minutos 
  Tiempo mínimo: 15.0 minutos"]
-		D_2stats -> stats
 	}
 	node [color="#FFEDBB" shape=box style=filled]
 	subgraph cluster_desks {
 		color=lightgrey fontsize=14 label="Escritorios activos" style=filled
-		rankdir=LR
-		D_0 [label="El bicho siuuu - Escritorio 1"]
+		D_0 [label="Nicola Tesla - Escritorio 1"]
 		D_1 -> D_0
-		D_1 [label="Ana de Armas :3 - Escritorio 2"]
+		D_1 [label="El bicho siuuu - Escritorio 2"]
 		D_2 -> D_1
-		D_2 [label="Henry Cavil - Escritorio 3"]
+		D_2 [label="Ana de Armas :3 - Escritorio 3"]
+		D_3 -> D_2
+		D_3 [label="Henry Cavil - Escritorio 4"]
 	}
 	node [color="#FFEDBB" shape=box style=filled]
 	subgraph cluster_clients {
 		color=lightgrey fontsize=14 label="Fila de espera" style=filled
+		rankdir=LR
 		C_0 [label="29331511655555 -  Henry Ford "]
-		C_1 -> C_0 [constraint=false]
+		C_1 -> C_0 [constraint=false dir=back]
 		C_1 [label="2933151164444 -  Freddie Mercuri "]
-		C_2 -> C_1 [constraint=false]
+		C_2 -> C_1 [constraint=false dir=back]
 		C_2 [label="2933151163333 -  Dante "]
-		C_3 -> C_2 [constraint=false]
+		C_3 -> C_2 [constraint=false dir=back]
 		C_3 [label="2933151162222 -  Bill Gates "]
-		C_4 -> C_3 [constraint=false]
+		C_4 -> C_3 [constraint=false dir=back]
 		C_4 [label="2933151161111 -  Arturito "]
 	}
 }

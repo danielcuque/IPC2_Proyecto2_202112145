@@ -13,7 +13,7 @@ from controller.store.StoreData import StoreData
 from model.simulation.SystemConfig import SystemConfig
 
 # Utils
-from model.utils.ShowProperties import show_companies, show_company_by_id, show_company, show_offices, show_office, show_desks
+from model.utils.ShowProperties import show_company, show_office
 
 
 class Menu2:

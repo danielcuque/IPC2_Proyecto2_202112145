@@ -25,7 +25,6 @@ class Menu3:
                                   choices=["1. Continuar/reanudar simulación de atención",
                                            "2. Activar escritorio de servicio",
                                            "3. Desactivar escritorio de servicio",
-                                           "4. Atender cliente",
                                            "5. Solicitud de atención",
                                            "6. Simular actividad de punto de atención",
                                            "7. Regresar"])]
@@ -37,8 +36,6 @@ class Menu3:
                         self._activate_desk()
                     elif answer['menu'] == "3. Desactivar escritorio de servicio":
                         self._inactivate_desk()
-                    elif answer['menu'] == "4. Atender cliente":
-                        self._attend_client()
                     elif answer['menu'] == "5. Solicitud de atención":
                         self._create_new_client()
                     elif answer['menu'] == "6. Simular actividad de punto de atención":
@@ -70,9 +67,6 @@ class Menu3:
             show_desk(StoreData.selected_office.inactive_desk_by_algorithm())
         else:
             Console().print("No hay escritorios disponibles", style="bold red")
-
-    def _attend_client(self) -> None:
-        pass
 
     def _create_new_client(self) -> None:
         while True:
@@ -124,8 +118,9 @@ class Menu3:
 
     def _simulate_activity(self) -> None:
         Simulation().simulate_all()
-        doc = GenerateGraphvizDoc()
-        doc.generate_doc()
+        if StoreData.selected_office is not None:
+            doc = GenerateGraphvizDoc()
+            doc.generate_doc()
 
     def verify_if_data_exists(self) -> bool:
 

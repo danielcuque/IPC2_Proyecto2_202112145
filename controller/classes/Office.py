@@ -59,7 +59,7 @@ class Office:
 
     def active_desk_by_algorithm(self) -> Desk:
         desk_inactive: Desk = self.inactive_desks.pop().data
-        desk_inactive.set_as_active()
+        desk_inactive.is_available_to_receive_clients = True
         self.active_desks.push(desk_inactive)
         return desk_inactive
 

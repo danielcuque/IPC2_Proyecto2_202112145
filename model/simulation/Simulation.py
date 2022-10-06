@@ -34,6 +34,12 @@ class Simulation:
 
         Console().print("Simulación finalizada", style="bold green")
 
+    def execute_all_methods(self):
+        self.show_principal_info()
+        self.assign_client_to_desk()
+        self.reduce_time_in_desk()
+
+
     def show_principal_info(self):
         selected_company = StoreData.selected_company
         selected_office = StoreData.selected_office
@@ -74,8 +80,6 @@ class Simulation:
                     desk.attend_client(client)
                     Console().print(
                         f'Cliente {client.name} asignado a escritorio {desk.employee}', style="bold yellow")
-                else:
-                    Console().print("No hay clientes en cola", style="bold red")
             node = node.next
 
     def reduce_time_in_desk(self) -> None:
@@ -157,10 +161,10 @@ class Simulation:
     # Todo para tiempos
     '''
     [ x ]Eliminar transaccion de la lista de transacciones del cliente si el tiempo es 0
-    [  ]Mostrar tiempo de atención
-    [  ]Mostrar tiempo promedio de atención
-    [  ]Mostrar tiempo máximo de atención
-    [  ]Mostrar tiempo mínimo de atención
+    [ x ]Mostrar tiempo de atención
+    [ x ]Mostrar tiempo promedio de atención
+    [ x ]Mostrar tiempo máximo de atención
+    [ x ]Mostrar tiempo mínimo de atención
 
     Cuando se ingrese un cliente 
     '''

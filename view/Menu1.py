@@ -1,6 +1,4 @@
-from wsgiref import validate
 from rich.console import Console
-from rich.table import Table
 import inquirer
 
 from controller.classes.Company import Company

@@ -21,7 +21,7 @@ class Desk:
     min_time_attention: int = 0
     max_time_attention: int = 0
 
-    set_as_available: bool = True
+    is_available_to_receive_clients: bool = True
 
     # Is the desk free to attend a new client?
     def is_free(self) -> bool:
@@ -35,7 +35,6 @@ class Desk:
             # set variables
             self.set_time_variables(client)
             self.calculate_average_time_attention()
-
         self.client_in_attention = client
 
     def set_time_variables(self, client: Client):
