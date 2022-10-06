@@ -2,14 +2,16 @@ import inquirer
 from rich.console import Console
 
 # Classes
-from controller.classes.Company import Company
-from controller.classes.Office import Office
+from controller.classes.Client import Client
+from controller.classes.TransactionClient import TransactionClient
+from controller.classes.TransactionCompany import TransactionCompany
 
 # Controllers
 from controller.store.StoreData import StoreData
 from model.docs.GenerateGraphvizDoc import GenerateGraphvizDoc
 from model.simulation.Simulation import Simulation
 from model.utils.ShowProperties import show_desk, show_desks
+from model.utils.Utils import ask_yes_no
 
 
 class Menu3:
@@ -38,7 +40,7 @@ class Menu3:
                     elif answer['menu'] == "4. Atender cliente":
                         self._attend_client()
                     elif answer['menu'] == "5. Solicitud de atención":
-                        self._request_attend()
+                        self._create_new_client()
                     elif answer['menu'] == "6. Simular actividad de punto de atención":
                         self._simulate_activity()
                     elif answer['menu'] == "7. Regresar":
@@ -72,10 +74,53 @@ class Menu3:
     def _attend_client(self) -> None:
         pass
 
-    def _request_attend(self) -> None:
+    def _create_new_client(self) -> None:
         while True:
-            questions = []
-            break
+            Console().print("Creando nuevo cliente", style="bold blue")
+            client_field: list[inquirer.Text] = [
+                inquirer.Text('dpi', message="Ingrese el dpi del cliente"),
+                inquirer.Text('name', message="Ingrese el nombre del cliente")]
+
+            answer = inquirer.prompt(questions=client_field)
+            if answer is not None:
+                client = Client(answer['dpi'], answer['name'])
+                StoreData.selected_office.add_client(client)
+                Console().print("Cliente creado", style="bold green")
+            self._create_transaction(client)
+            if not ask_yes_no("¿Desea agregar otro cliente?"):
+                break
+
+    def _create_transaction(self, client: Client) -> None:
+        while True:
+            choices = []
+            node = StoreData.selected_company.transactions.head
+            for i in range(StoreData.selected_company.transactions.get_size()):
+                choices.append(node.data.name)
+                node = node.next
+
+            Console().print(
+                f"Agregar una nueva transacción para:{client.get_name()}")
+
+            transaction_field: list[inquirer.Text] = [inquirer.List(
+                'transaction', message="Seleccione una transacción", choices=choices)]
+
+            quantity_field: list[inquirer.Text] = [inquirer.Text(
+                'quantity', message="Ingrese la cantidad de transacciones", validate=lambda _, x: x.isdigit())]
+
+            answer = inquirer.prompt(questions=transaction_field)
+            answer_quantity = inquirer.prompt(questions=quantity_field)
+
+            if answer is not None and answer_quantity is not None:
+                transaction: TransactionCompany = StoreData.selected_company.search_transaction_by_name(
+                    answer['transaction'])
+                transaction_for_client: TransactionClient = TransactionClient(
+                    transaction, answer_quantity['quantity'])
+
+                client.add_transaction_for_client(transaction_for_client)
+                Console().print("Transacción agregada", style="bold green")
+                
+                if not ask_yes_no("¿Desea agregar otra transacción?"):
+                    break
 
     def _simulate_activity(self) -> None:
         Simulation().simulate_all()

@@ -1,8 +1,24 @@
 digraph "Oficina Banrural Villa Nueva" {
+	subgraph cluster_stats {
+		color=lightgrey fontsize=14 label="Estadísticas" style=filled
+		node [color="#FFEDBB" shape=box style=filled]
+		stats [label="Clientes atendidos: 5
+ Compañia: Banco de Desarrollo Rural
+ Punto de atención: Banrural Villa Nueva
+ Escritorios activos: 2
+ Escritorios inactivos: 0"]
+		D_0stats [label="Atendió: Isaac Newton Escritorio: A022 Clientes atendidos: 2
+ Tiempo promedio: 35.0 minutos 
+ Tiempo máxmimo: 30.0 minutos 
+ Tiempo mínimo: 10.0 minutos"]
+		D_1stats [label="Atendió: Julius Ramirez Escritorio: B011 Clientes atendidos: 3
+ Tiempo promedio: 15.67 minutos 
+ Tiempo máxmimo: 16.0 minutos 
+ Tiempo mínimo: 5.0 minutos"]
+	}
 	node [color="#FFEDBB" shape=box style=filled]
 	subgraph cluster_desks {
 		color=lightgrey fontsize=14 label="Escritorios activos" style=filled
-		rank=same
 		D_0 [label="Isaac Newton - Escritorio 1"]
 		D_1 -> D_0
 		D_1 [label="Julius Ramirez - Escritorio 2"]
@@ -10,14 +26,15 @@ digraph "Oficina Banrural Villa Nueva" {
 	node [color="#FFEDBB" shape=box style=filled]
 	subgraph cluster_clients {
 		color=lightgrey fontsize=14 label="Fila de espera" style=filled
+		rankdir=LR
 		C_0 [label="29331511655555 -  Henry Ford "]
-		C_1 -> C_0 [constraint=false]
+		C_1 -> C_0 [constraint=false dir=back]
 		C_1 [label="2933151164444 -  Freddie Mercuri "]
-		C_2 -> C_1 [constraint=false]
+		C_2 -> C_1 [constraint=false dir=back]
 		C_2 [label="2933151163333 -  Dante "]
-		C_3 -> C_2 [constraint=false]
+		C_3 -> C_2 [constraint=false dir=back]
 		C_3 [label="2933151162222 -  Bill Gates "]
-		C_4 -> C_3 [constraint=false]
+		C_4 -> C_3 [constraint=false dir=back]
 		C_4 [label="2933151161111 -  Arturito "]
 	}
 }

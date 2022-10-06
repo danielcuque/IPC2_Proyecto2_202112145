@@ -1,8 +1,28 @@
 digraph "Oficina Claro Amatitlan" {
 	subgraph cluster_stats {
 		color=lightgrey fontsize=14 label="Estadísticas" style=filled
+		node [color="#FFEDBB" shape=box style=filled]
 		rankdir=LR
-		stats [label="Clientes atendidos: 5"]
+		stats [label="Clientes atendidos: 5
+ Compañia: Claro
+ Punto de atención: Claro Amatitlan
+ Escritorios activos: 3
+ Escritorios inactivos: 1"]
+		D_0stats [label="Clientes atendidos: 2
+ Tiempo promedio: 15.0 minutos 
+ Tiempo máxmimo: 10.0 minutos 
+ Tiempo mínimo: 10.0 minutos"]
+		D_0stats -> stats
+		D_1stats [label="Clientes atendidos: 2
+ Tiempo promedio: 44.0 minutos 
+ Tiempo máxmimo: 40.0 minutos 
+ Tiempo mínimo: 8.0 minutos"]
+		D_1stats -> stats
+		D_2stats [label="Clientes atendidos: 1
+ Tiempo promedio: 15.0 minutos 
+ Tiempo máxmimo: 15.0 minutos 
+ Tiempo mínimo: 15.0 minutos"]
+		D_2stats -> stats
 	}
 	node [color="#FFEDBB" shape=box style=filled]
 	subgraph cluster_desks {

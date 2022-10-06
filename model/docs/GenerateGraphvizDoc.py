@@ -26,15 +26,15 @@ class GenerateGraphvizDoc:
 
         if node is not None:
             g.attr('node', shape='box', style='filled', color='#FFEDBB')
-
             with g.subgraph(name='cluster_clients') as c:
                 c.attr(style='filled', color='lightgrey',
                        label=f'Fila de espera', fontsize='14')
+                c.attr(rankdir='LR')
                 for i in range(StoreData.selected_office.clients_attended.items.get_size()):
                     client: Client = node.data
                     c.node(f'C_{i}', f'{client.dpi} - {client.name}')
                     if node.next is not None:
-                        c.edge(f'C_{i+1}', f'C_{i}', constraint='false')
+                        c.edge(f'C_{i+1}', f'C_{i}', constraint='false', dir="back")
                     node = node.next
         else:
             Console().print('No hay clientes atendidos', style='bold red')
@@ -48,7 +48,6 @@ class GenerateGraphvizDoc:
             with g.subgraph(name='cluster_desks') as c:
                 c.attr(style='filled', color='lightgrey',
                        label=f'Escritorios activos', fontsize='14')
-                c.attr(rankdir='LR')
                 for i in range(StoreData.selected_office.active_desks.get_size()):
                     desk: Desk = node.data
                     c.node(f'D_{i}', f'{desk.employee} - Escritorio {i+1}')
@@ -63,6 +62,11 @@ class GenerateGraphvizDoc:
             c.attr(style='filled', color='lightgrey',
                    label=f'Estadísticas', fontsize='14')
             c.attr('node', shape='box', style='filled', color='#FFEDBB')
-            c.attr(rankdir='LR')
             c.node(
                 'stats', f'Clientes atendidos: {StoreData.selected_office.clients_attended.items.get_size()}\n Compañia: {StoreData.selected_company.name}\n Punto de atención: {StoreData.selected_office.name}\n Escritorios activos: {StoreData.selected_office.active_desks.get_size()}\n Escritorios inactivos: {StoreData.selected_office.inactive_desks.get_size()}')
+
+            node = StoreData.selected_office.get_head_active_desks()
+            for i in range(StoreData.selected_office.active_desks.get_size()):
+                desk: Desk = node.data
+                c.node(f'D_{i}stats', f'Atendió: {desk.employee} Escritorio: {desk.correlative} Clientes atendidos: {desk.attend_clients}\n Tiempo promedio: {round((desk.average_time_attention), 2)} minutos \n Tiempo máxmimo: {desk.max_time_attention} minutos \n Tiempo mínimo: {desk.min_time_attention} minutos')
+                node = node.next

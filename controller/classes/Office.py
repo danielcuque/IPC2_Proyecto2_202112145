@@ -49,7 +49,7 @@ class Office:
         if client_dequeue is not None:
             self.clients_out_queue += 1
             self.clients_in_queue -= 1
-            
+
             self.clients_attended.enqueue(client_dequeue.data)
         return client_dequeue
 

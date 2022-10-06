@@ -25,3 +25,6 @@ class Client:
     def get_first_transaction_name(self) -> str:
         transaction_company: TransactionCompany = self.transactions.head.data.transaction_company
         return transaction_company.get_name()
+
+    def get_first_transaction(self) -> TransactionClient:
+        return self.transactions.head.data

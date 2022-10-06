@@ -40,3 +40,11 @@ class Company:
             if transaction.id_transaction == id_transaction:
                 return transaction
             node = node.next
+
+    def search_transaction_by_name(self, name: str) -> TransactionCompany:
+        node = self.transactions.head
+        while node is not None:
+            transaction: TransactionCompany = node.data
+            if transaction.name == name:
+                return transaction
+            node = node.next

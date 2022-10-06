@@ -86,11 +86,11 @@ class Simulation:
             desk: Desk = node.data
             if desk.get_client_in_attention() is not None:
                 self.show_desks_with_clients(desk)
-                if self.next_step(desk.get_client_in_attention()):
+                if self.next_step(desk.get_client_in_attention(), desk):
                     desk.attend_client(None)
             node = node.next
 
-    def next_step(self, client: Client):
+    def next_step(self, client: Client, desk: Desk) -> bool:
         list_of_transactions: SinglyLinkedList = client.transactions
 
         node = list_of_transactions.head
@@ -102,17 +102,17 @@ class Simulation:
                 return
             else:
                 client.get_transactions().remove_at_start()
-                return self.next_step(client)
+                return self.next_step(client, desk)
         return True
 
     def show_desks_with_clients(self, desk: Desk):
         Console().print(f'Atendiendo: {desk.employee}\n'
-        f'Cliente: {desk.get_client_in_attention().name}\n'
-        f'Transacción: {desk.get_client_in_attention().get_first_transaction_name()}', style="bold orange1")
+                        f'Cliente: {desk.get_client_in_attention().name}\n'
+                        f'Transacción: {desk.get_client_in_attention().get_first_transaction_name()}', style="bold bright_white")
 
-        Console().print(f'Tiempo promedio de atención:\n'
-            f'Tiempo máximo de atención:\n'
-            f'Tiempo mínimo de atención:\n', style="bold orange1")
+        Console().print(f'Tiempo promedio de atención:{desk.average_time_attention}\n'
+                        f'Tiempo máximo de atención:{desk.max_time_attention}\n'
+                        f'Tiempo mínimo de atención:{desk.min_time_attention}\n', style="bold bright_white")
 
     def verify_data(self) -> bool:
         if StoreData.selected_company is not None and StoreData.selected_office is not None:
@@ -154,7 +154,6 @@ class Simulation:
     [ x ]Cuando termine de atender al cliente, el estado es None
     '''
 
-
     # Todo para tiempos
     '''
     [ x ]Eliminar transaccion de la lista de transacciones del cliente si el tiempo es 0
@@ -165,4 +164,3 @@ class Simulation:
 
     Cuando se ingrese un cliente 
     '''
-    
