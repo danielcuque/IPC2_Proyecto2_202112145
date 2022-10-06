@@ -1,7 +1,8 @@
-
+from rich.console import Console
 from controller.base.NodeForSinglyList import NodeForSinglyList
 from controller.base.Queue import Queue
 from controller.base.Stack import Stack
+from controller.classes.Client import Client
 from controller.classes.Desk import Desk
 
 
@@ -65,7 +66,7 @@ class Office:
 
     def inactive_desk_by_algorithm(self) -> Desk:
         desk_active: Desk = self.active_desks.pop().data
-        desk_active.set_as_inactive()
+        desk_active.is_available_to_receive_clients = False
         self.inactive_desks.push(desk_active)
         return desk_active
 
@@ -76,7 +77,8 @@ class Office:
         self.calculate_average_atention()
         self.calculate_min_max_atention()
         self.calculate_average_waiting()
-        self.calculate_min_max_waiting()
+        self.calculate_min_waiting()
+        self.calculate_max_waiting()
 
     def calculate_average_atention(self) -> None:
         if self.clients_out_queue == 0:
@@ -91,7 +93,8 @@ class Office:
             sum_of_times += desk.accumulated_time
             count_clients += desk.attend_clients
             node = node.next
-        print(f"Suma de tiempos: {sum_of_times}, Cantidad de clientes: {count_clients}")
+        print(
+            f"Suma de tiempos: {sum_of_times}, Cantidad de clientes: {count_clients}")
         self.average_time_attention_in_office = round(
             (sum_of_times / count_clients), 2)
 
@@ -100,31 +103,48 @@ class Office:
             return
 
         node: NodeForSinglyList = self.active_desks.stack.head
-        max_time: int = 0
-        min_time: int = 0
 
         for i in range(self.active_desks.get_size()):
             desk: Desk = node.data
             if self.max_time_attention_in_office == 0 and self.min_time_attention_in_office == 0:
-                max_time = desk.max_time_attention
-                min_time = desk.min_time_attention
-                print(f"Max: {max_time}, Min: {min_time}")
+                self.max_time_attention_in_office = desk.max_time_attention
+                self.min_time_attention_in_office = desk.min_time_attention
             else:
-                if desk.max_time_attention > max_time:
-                    max_time = desk.max_time_attention
-                if desk.min_time_attention < min_time:
-                    min_time = desk.min_time_attention
+                if desk.max_time_attention > self.max_time_attention_in_office:
+                    self.max_time_attention_in_office = desk.max_time_attention
+                if desk.min_time_attention < self.min_time_attention_in_office:
+                    self.min_time_attention_in_office = desk.min_time_attention
 
             node = node.next
 
-        self.max_time_attention_in_office = max_time
-        self.min_time_attention_in_office = min_time
-
     def calculate_average_waiting(self):
-        pass
+        if self.clients_in_queue == 0:
+            return
+        self.average_time_waiting_in_office = round(
+            (self.max_time_waiting_in_office + self.min_time_waiting_in_office) / 2, 2)
 
-    def calculate_min_max_waiting(self):
-        pass
+    def calculate_min_waiting(self):
+        if self.clients_in_queue == 0:
+            return
+        min_time_waiting: float = self.min_time_attention_in_office
+        self.min_time_waiting_in_office = min_time_waiting
+
+    def calculate_max_waiting(self):
+        if self.clients_in_queue == 0:
+            return
+
+        max_time_waiting: float = self.max_time_attention_in_office
+        self.max_time_waiting_in_office = max_time_waiting
+
+        sum_time_waiting: float = 0
+
+        node: NodeForSinglyList = self.clients_pending.items.head
+        for i in range(self.clients_pending.get_size()):
+            client: Client = node.data
+            sum_time_waiting += client.get_sum_time_transaction_for_client()
+            node = node.next
+
+        self.max_time_waiting_in_office += sum_time_waiting
 
     def search_desk_by_id(self, id_desk: str, is_active: bool = False) -> Desk:
         list_of_desks: Stack = self.active_desks if is_active else self.inactive_desks
