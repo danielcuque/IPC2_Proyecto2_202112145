@@ -9,13 +9,13 @@ digraph "Oficina Banrural Villa Nueva" {
                 Escritorios inactivos: 0
 
 
-                Tiempo promedio de atención: 0 minutos
-                Tiempo máximo de atención: 0 minutos
+                Tiempo promedio de atención: 13.2 minutos
+                Tiempo máximo de atención: 30.0 minutos
                 Tiempo mínimo de atención: 0 minutos
 
-                Tiempo promedio de espera: 0 minutos
-                Tiempo máximo de espera: 0 minutos
-                Tiempo mínimo de espera: 0 minutos
+                Tiempo promedio de espera: 0.0 minutos
+                Tiempo máximo de espera: 0.0 minutos
+                Tiempo mínimo de espera: 0.0 minutos
                 "]
 		D_0stats [label="Atendió: Isaac Newton Escritorio: A022 Clientes atendidos: 2
  Tiempo promedio: 20.0 minutos 

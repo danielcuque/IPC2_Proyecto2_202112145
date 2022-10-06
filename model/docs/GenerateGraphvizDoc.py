@@ -72,8 +72,8 @@ class GenerateGraphvizDoc:
 
 
                 Tiempo promedio de atención: {StoreData.selected_office.average_time_attention_in_office} minutos
-                Tiempo máximo de atención: {StoreData.selected_office.max_time_waiting_in_office} minutos
-                Tiempo mínimo de atención: {StoreData.selected_office.min_time_waiting_in_office} minutos
+                Tiempo máximo de atención: {StoreData.selected_office.max_time_attention_in_office} minutos
+                Tiempo mínimo de atención: {StoreData.selected_office.min_time_attention_in_office} minutos
 
                 Tiempo promedio de espera: {StoreData.selected_office.average_time_waiting_in_office} minutos
                 Tiempo máximo de espera: {StoreData.selected_office.max_time_waiting_in_office} minutos
@@ -83,5 +83,5 @@ class GenerateGraphvizDoc:
             node = StoreData.selected_office.get_head_active_desks()
             for i in range(StoreData.selected_office.active_desks.get_size()):
                 desk: Desk = node.data
-                c.node(f'D_{i}stats', f'Atendió: {desk.employee} Escritorio: {desk.correlative} Clientes atendidos: {desk.attend_clients}\n Tiempo promedio: {round((desk.average_time_attention), 2)} minutos \n Tiempo máxmimo: {desk.max_time_attention} minutos \n Tiempo mínimo: {desk.min_time_attention} minutos')
+                c.node(f'D_{i}stats', f'Atendió: {desk.employee} Escritorio: {desk.correlative} Clientes atendidos: {desk.attend_clients}\n Tiempo promedio: {(desk.average_time_attention)} minutos \n Tiempo máxmimo: {desk.max_time_attention} minutos \n Tiempo mínimo: {desk.min_time_attention} minutos')
                 node = node.next

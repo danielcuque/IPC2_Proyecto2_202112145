@@ -39,7 +39,8 @@ class Desk:
 
     def set_time_variables(self, client: Client):
         # Set the accumulated time with the value of the first transaction
-        total_time_attention_client: float = self.get_sum_time_transaction_for_client(client)
+        total_time_attention_client: float = self.get_sum_time_transaction_for_client(
+            client)
         if self.min_time_attention == 0 and self.max_time_attention == 0:
             self.min_time_attention: int = total_time_attention_client
             self.max_time_attention: int = total_time_attention_client
@@ -52,11 +53,8 @@ class Desk:
 
     def calculate_average_time_attention(self) -> None:
         if self.attend_clients > 0:
-            Console().print(
-                f"self.accumulated_time:{self.accumulated_time} ", justify="center")
-            Console().print(
-                f"self.attend_clients: {self.attend_clients}", justify="center")
-            self.average_time_attention = self.accumulated_time / self.attend_clients
+            self.average_time_attention = round(
+                (self.accumulated_time / self.attend_clients), 2)
 
     def get_sum_time_transaction_for_client(self, client: Client) -> float:
         node = client.get_transactions().head

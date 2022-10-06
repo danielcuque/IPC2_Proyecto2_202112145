@@ -16,14 +16,14 @@ class Office:
         self.clients_attended: Queue = Queue()
 
     # Attention times
-    max_time_attention_in_office: int = 0
-    min_time_attention_in_office: int = 0
-    average_time_attention_in_office: int = 0
+    max_time_attention_in_office: float = 0.0
+    min_time_attention_in_office: float = 0.0
+    average_time_attention_in_office: float = 0.0
 
     # Waiting times
-    max_time_waiting_in_office: int = 0
-    min_time_waiting_in_office: int = 0
-    average_time_waiting_in_office: int = 0
+    max_time_waiting_in_office: float = 0.0
+    min_time_waiting_in_office: float = 0.0
+    average_time_waiting_in_office: int = 0.0
 
     # Clients in queue/ out queue
     clients_in_queue: int = 0
@@ -84,19 +84,41 @@ class Office:
 
         node: NodeForSinglyList = self.active_desks.stack.head
         sum_of_times: int = 0
-        count: int = 0
+        count_clients: int = 0
 
         for i in range(self.active_desks.get_size()):
             desk: Desk = node.data
             sum_of_times += desk.accumulated_time
-            count += 1
+            count_clients += desk.attend_clients
             node = node.next
-
-        self.average_time_attention_in_office = sum_of_times / count
+        print(f"Suma de tiempos: {sum_of_times}, Cantidad de clientes: {count_clients}")
+        self.average_time_attention_in_office = round(
+            (sum_of_times / count_clients), 2)
 
     def calculate_min_max_atention(self):
         if self.clients_out_queue == 0:
             return
+
+        node: NodeForSinglyList = self.active_desks.stack.head
+        max_time: int = 0
+        min_time: int = 0
+
+        for i in range(self.active_desks.get_size()):
+            desk: Desk = node.data
+            if self.max_time_attention_in_office == 0 and self.min_time_attention_in_office == 0:
+                max_time = desk.max_time_attention
+                min_time = desk.min_time_attention
+                print(f"Max: {max_time}, Min: {min_time}")
+            else:
+                if desk.max_time_attention > max_time:
+                    max_time = desk.max_time_attention
+                if desk.min_time_attention < min_time:
+                    min_time = desk.min_time_attention
+
+            node = node.next
+
+        self.max_time_attention_in_office = max_time
+        self.min_time_attention_in_office = min_time
 
     def calculate_average_waiting(self):
         pass

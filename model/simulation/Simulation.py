@@ -16,7 +16,7 @@ class Simulation:
 
     def execute_simulation(self):
         while self.verify_data():
-            self.show_principal_info()
+            self.execute_all_methods()
             question = [
                 inquirer.List('menu',
                               message="Seleccione una opción",
@@ -25,7 +25,7 @@ class Simulation:
             answer = inquirer.prompt(questions=question)
             if answer is not None:
                 if answer['menu'] == "Continuar":
-                    self.execute_all_methods()
+                    pass
                 elif answer['menu'] == "Pausar":
                     break
                 else:
@@ -37,7 +37,7 @@ class Simulation:
         self.show_principal_info()
         self.assign_client_to_desk()
         self.reduce_time_in_desk()
-
+        StoreData.selected_office.calculate_times_variables()
 
     def show_principal_info(self):
         selected_company = StoreData.selected_company
@@ -61,10 +61,21 @@ class Simulation:
         Console().print(
             f'Escritorios inactivos: {selected_office.inactive_desks.get_size()}', style="bold yellow")
 
+        # Show average time for waiting
+        Console().print(
+            f'\nTiempo promedio de espera: {selected_office.average_time_waiting_in_office}', style="bold orange1")
+        Console().print(
+            f'Tiempo máximo de espera: {selected_office.max_time_waiting_in_office}', style="bold orange1")
+        Console().print(
+            f'Tiempo mínimo de espera: {selected_office.min_time_attention_in_office}', style="bold orange1")
+
         # Show average time for attention
-        Console().print(f'\nTiempo promedio de espera: 0', style="bold yellow")
-        Console().print(f'Tiempo máximo de espera: 0', style="bold yellow")
-        Console().print(f'Tiempo mínimo de espera: 0', style="bold yellow")
+        Console().print(
+            f'\nTiempo promedio de atención: {selected_office.average_time_attention_in_office}', style="bold orange1")
+        Console().print(
+            f'Tiempo máximo de atención: {selected_office.max_time_attention_in_office}', style="bold orange1")
+        Console().print(
+            f'Tiempo mínimo de atención: {selected_office.min_time_attention_in_office}', style="bold orange1")
 
     def assign_client_to_desk(self) -> None:
         list_of_desks = StoreData.selected_office.active_desks
@@ -78,7 +89,7 @@ class Simulation:
                     client: Client = client_node.data
                     desk.attend_client(client)
                     Console().print(
-                        f'Cliente {client.name} asignado a escritorio {desk.employee}', style="bold yellow")
+                        f'\nPasar {client.name} al escritorio {desk.correlative}\n', style="bold yellow", justify="center")
             node = node.next
 
     def reduce_time_in_desk(self) -> None:
@@ -144,25 +155,4 @@ class Simulation:
     def simulate_all(self):
         while self.verify_data():
             self.execute_all_methods()
-
         Console().print("Simulación finalizada", style="bold green")
-    # Todo para simulacion
-    '''
-    [ x ]Verificar si hay clientes en la cola
-    [ x ]Si hay clientes en la cola, atender al primero
-    [ x ]Si no hay clientes en la cola, mostrar mensaje
-    [ x ]Si no hay escritorios activos, mostrar mensaje y no asignar cliente
-    [ x ]Si el escritorio activo, termina con su cliente, se le asigna uno nuevo
-    [ x ]Cuando termine de atender al cliente, el estado es None
-    '''
-
-    # Todo para tiempos
-    '''
-    [ x ]Eliminar transaccion de la lista de transacciones del cliente si el tiempo es 0
-    [ x ]Mostrar tiempo de atención
-    [ x ]Mostrar tiempo promedio de atención
-    [ x ]Mostrar tiempo máximo de atención
-    [ x ]Mostrar tiempo mínimo de atención
-
-    Cuando se ingrese un cliente 
-    '''
